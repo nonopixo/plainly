@@ -1,0 +1,2771 @@
+<!DOCTYPE html>
+<html lang="ru" class="scroll-smooth" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>понятно. — ИИ-переводчик с медицинского и ветеринарного</title>
+
+    <!-- Google Fonts: Onest (Headings), Inter (Body), JetBrains Mono (Medical Data) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Onest:wght@500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Tailwind Config Mapped to Warm CSS Variables (NO /opacity on CSS vars) -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        heading: ['Onest', 'sans-serif'],
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    },
+                    borderColor: {
+                        DEFAULT: 'var(--border)',
+                        warm: 'var(--border)',
+                        strong: 'var(--border-strong)',
+                        divider: 'var(--divider)',
+                        accentSoft: 'var(--accent-soft-border)',
+                        activeSoft: 'var(--active-soft-border)',
+                        vetSoft: 'var(--vet-soft-border)',
+                        amberBorder: 'var(--amber-border)',
+                        urgentBorder: 'var(--urgent-border)',
+                    },
+                    colors: {
+                        page: 'var(--bg-page)',
+                        card: 'var(--bg-card)',
+                        surface: 'var(--bg-surface)',
+                        surfaceHover: 'var(--bg-surface-hover)',
+                        ink: 'var(--text-primary)',
+                        muted: 'var(--text-secondary)',
+                        accent: 'var(--accent)',
+                        accentHover: 'var(--accent-hover)',
+                        accentSoft: 'var(--accent-soft)',
+                        activeAccent: 'var(--active-accent)',
+                        activeAccentHover: 'var(--active-accent-hover)',
+                        activeSoft: 'var(--active-soft)',
+                        vet: 'var(--vet-accent)',
+                        vetHover: 'var(--vet-accent-hover)',
+                        vetSoft: 'var(--vet-soft)',
+                        amberWarm: 'var(--amber)',
+                        amberBg: 'var(--amber-bg)',
+                        amberText: 'var(--amber-text)',
+                        urgent: 'var(--urgent)',
+                        urgentBg: 'var(--urgent-bg)',
+                        urgentText: 'var(--urgent-text)',
+                    },
+                    borderRadius: {
+                        'bento': '24px',
+                        'card': '18px',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Theme Design Tokens: STRICTLY ZERO BLUE AND ZERO GREEN -->
+    <style>
+        :root,
+        [data-theme="light"] {
+            --bg-page: #FAF7F2;
+            --bg-card: #FFFFFF;
+            --bg-surface: #F3EDE4;
+            --bg-surface-hover: #E9E0D3;
+            --border: #E6DFD6;
+            --border-strong: #D6CCC0;
+            --divider: #E8E1D9;
+            --text-primary: #1F1D1B;
+            --text-secondary: #6E6862;
+            --accent: #D95D39;
+            --accent-hover: #C24B29;
+            --accent-soft: #FBECE6;
+            --accent-soft-border: #F2CFC2;
+            --vet-accent: #A65E3E;
+            --vet-accent-hover: #8E4E31;
+            --vet-soft: #F5E8E0;
+            --vet-soft-border: #E5CBB9;
+            --amber: #E5A93C;
+            --amber-bg: #FDF5E4;
+            --amber-border: #EBD094;
+            --amber-text: #85570F;
+            --urgent: #9E2A2B;
+            --urgent-bg: #F9EBEB;
+            --urgent-border: #E5BCBC;
+            --urgent-text: #7F1F20;
+            --glow-1: rgba(217, 93, 57, 0.08);
+            --glow-2: rgba(229, 169, 60, 0.07);
+            --header-bg: rgba(250, 247, 242, 0.92);
+            --shadow-card: 0 2px 14px rgba(31, 29, 27, 0.03);
+            --shadow-float: 0 14px 36px rgba(31, 29, 27, 0.16);
+        }
+
+        [data-theme="dark"] {
+            --bg-page: #141210;
+            --bg-card: #1E1B18;
+            --bg-surface: #26221E;
+            --bg-surface-hover: #302B26;
+            --border: #2C2722;
+            --border-strong: #3A332D;
+            --divider: #26221D;
+            --text-primary: #F2ECE4;
+            --text-secondary: #A69E95;
+            --accent: #E26D47;
+            --accent-hover: #EE7E5A;
+            --accent-soft: rgba(226, 109, 71, 0.2);
+            --accent-soft-border: #5C3629;
+            --vet-accent: #C77D59;
+            --vet-accent-hover: #D68D6A;
+            --vet-soft: rgba(199, 125, 89, 0.18);
+            --vet-soft-border: #543A2C;
+            --amber: #E5A93C;
+            --amber-bg: #2B2316;
+            --amber-border: #594422;
+            --amber-text: #F2C97D;
+            --urgent: #D45859;
+            --urgent-bg: #301B1B;
+            --urgent-border: #5E2E2F;
+            --urgent-text: #F2A7A8;
+            --glow-1: rgba(226, 109, 71, 0.09);
+            --glow-2: rgba(199, 125, 89, 0.07);
+            --header-bg: rgba(20, 18, 16, 0.92);
+            --shadow-card: 0 4px 20px rgba(0, 0, 0, 0.32);
+            --shadow-float: 0 18px 40px rgba(0, 0, 0, 0.6);
+        }
+
+        /* Active Mode Accent Override */
+        [data-mode="human"] {
+            --active-accent: var(--accent);
+            --active-accent-hover: var(--accent-hover);
+            --active-soft: var(--accent-soft);
+            --active-soft-border: var(--accent-soft-border);
+        }
+        [data-mode="vet"] {
+            --active-accent: var(--vet-accent);
+            --active-accent-hover: var(--vet-accent-hover);
+            --active-soft: var(--vet-soft);
+            --active-soft-border: var(--vet-soft-border);
+        }
+
+        /* ZERO WHITE LINES GUARANTEE IN DARK MODE */
+        *, *::before, *::after {
+            border-color: var(--border);
+        }
+        header, section, footer, hr, .divider, .card, .bento-card {
+            border-color: var(--border) !important;
+        }
+        .divider {
+            border-color: var(--divider) !important;
+        }
+
+        /* Wide 2K Container */
+        .wide-container {
+            width: 100%;
+            max-width: 1560px;
+            margin-inline: auto;
+            padding-inline: clamp(20px, 3vw, 56px);
+        }
+
+        body {
+            background-color: var(--bg-page);
+            color: var(--text-primary);
+            transition: background-color 0.25s ease, color 0.25s ease;
+        }
+
+        /* Strict Terracotta Focus Ring (NEVER blue) */
+        *:focus-visible {
+            outline: 2px solid var(--active-accent, var(--accent)) !important;
+            outline-offset: 2px;
+        }
+
+        ::selection {
+            background-color: var(--accent-soft);
+            color: var(--text-primary);
+        }
+
+        /* Editorial Scrollbars */
+        ::-webkit-scrollbar {
+            width: 9px;
+            height: 9px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--bg-page);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--border-strong);
+            border-radius: 999px;
+            border: 2px solid var(--bg-page);
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--text-secondary);
+        }
+
+        /* Subtle Ambient Warm Glow in Hero */
+        .hero-ambient {
+            background:
+                radial-gradient(650px circle at 12% 18%, var(--glow-1), transparent 70%),
+                radial-gradient(560px circle at 88% 12%, var(--glow-2), transparent 70%);
+        }
+
+        .editorial-card {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow-card);
+            transition: background-color 0.25s ease, border-color 0.25s ease, transform 0.2s ease;
+        }
+
+        /* Warm Pulse & Micro-animations */
+        @keyframes warmPulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.42; }
+        }
+        .animate-warm-pulse {
+            animation: warmPulse 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+
+        @keyframes aiBeacon {
+            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(217, 93, 57, 0.55); }
+            70% { transform: scale(1); box-shadow: 0 0 0 7px rgba(217, 93, 57, 0); }
+            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(217, 93, 57, 0); }
+        }
+        .ai-beacon {
+            animation: aiBeacon 2.2s infinite;
+        }
+
+        @keyframes fadeSlideUp {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .fade-slide-up {
+            animation: fadeSlideUp 0.32s ease-out forwards;
+        }
+
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+        /* Dropzone active highlight */
+        .dropzone-active {
+            background-color: var(--active-soft) !important;
+            outline: 2px dashed var(--active-accent) !important;
+        }
+
+        /* Clean Print Stylesheet */
+        @media print {
+            body {
+                background: #FFFFFF !important;
+                color: #1F1D1B !important;
+            }
+            header,
+            footer,
+            #hero-intro,
+            #translator-controls,
+            #examples-bar,
+            #input-card,
+            #history-bar,
+            #result-actions,
+            #fallback-banner,
+            #veterinary-section,
+            #how-it-works,
+            #privacy-section,
+            #toast,
+            #term-tooltip,
+            #settings-modal {
+                display: none !important;
+            }
+            #translator-grid {
+                display: block !important;
+            }
+            #output-card {
+                border: none !important;
+                box-shadow: none !important;
+                padding: 0 !important;
+                background: #FFFFFF !important;
+            }
+            #print-header {
+                display: block !important;
+            }
+            .wide-container {
+                max-width: 100% !important;
+                padding: 0 !important;
+            }
+        }
+    </style>
+</head>
+
+<body data-mode="human" class="font-sans antialiased min-h-screen flex flex-col overflow-x-hidden">
+
+    <!-- ==================== STICKY HEADER ==================== -->
+    <header class="w-full sticky top-0 z-40 border-b backdrop-blur-md" style="background-color: var(--header-bg);">
+        <div class="wide-container h-16 sm:h-20 flex items-center justify-between gap-3">
+            <!-- Brand -->
+            <div class="flex items-center gap-5 min-w-0">
+                <a href="#" class="font-heading font-bold text-2xl sm:text-[26px] tracking-tight text-ink flex items-center hover:opacity-85 transition-opacity shrink-0">
+                    <span id="brand-name">понятно</span><span class="text-activeAccent transition-colors">.</span>
+                </a>
+                <span class="hidden xl:inline-block h-5 w-px" style="background-color: var(--divider);"></span>
+                <span id="brand-tagline" class="hidden xl:inline-block text-xs text-muted tracking-wide truncate">
+                    Медицина и ветеринария без тревоги
+                </span>
+            </div>
+
+            <!-- Anchor Navigation -->
+            <nav class="hidden lg:flex items-center gap-7 text-sm font-medium text-muted">
+                <a href="#translator" id="nav-translator" class="hover:text-ink transition-colors py-2">Переводчик</a>
+                <a href="#veterinary-section" class="hover:text-ink transition-colors py-2 flex items-center gap-1.5">
+                    <svg class="w-3.5 h-3.5 text-vet shrink-0" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                        <circle cx="7" cy="9.5" r="2.1"/>
+                        <circle cx="11" cy="6.5" r="2.1"/>
+                        <circle cx="15.5" cy="7.5" r="2.1"/>
+                        <circle cx="18.5" cy="11.5" r="1.9"/>
+                        <path d="M12.2 11.2c-2.6 0-5.2 2.2-5.2 4.6 0 1.8 1.5 2.7 3.2 2.7 1.1 0 1.6-.4 2.3-.4.8 0 1.4.4 2.4.4 1.6 0 2.9-1 2.9-2.7 0-2.4-2.8-4.6-5.6-4.6z"/>
+                    </svg>
+                    <span id="nav-vet">Ветеринария</span>
+                </a>
+                <a href="#how-it-works" id="nav-how" class="hover:text-ink transition-colors py-2">Как это работает</a>
+                <a href="#privacy-section" id="nav-privacy" class="hover:text-ink transition-colors py-2">Приватность</a>
+            </nav>
+
+            <!-- Right Controls: AI Badge, RU|EN Switcher, API Key Gear, Theme Toggle -->
+            <div class="flex items-center gap-2 sm:gap-2.5 shrink-0">
+                <!-- Gemini AI Live Status Badge -->
+                <div class="hidden sm:inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-medium bg-surface text-ink border border-warm">
+                    <span class="w-2 h-2 rounded-full bg-accent ai-beacon shrink-0"></span>
+                    <span id="ai-badge-text">Gemini AI</span>
+                </div>
+
+                <!-- Segmented RU | EN Language Switcher -->
+                <div class="inline-flex p-1 rounded-full bg-surface border border-warm" role="group" aria-label="Language switcher">
+                    <button type="button" id="lang-ru-btn" class="px-2.5 py-1 rounded-full text-xs font-semibold transition-all cursor-pointer bg-card text-ink border border-warm">RU</button>
+                    <button type="button" id="lang-en-btn" class="px-2.5 py-1 rounded-full text-xs font-semibold transition-all cursor-pointer text-muted hover:text-ink border border-transparent">EN</button>
+                </div>
+
+                <!-- Optional API Key Settings Gear (for GitHub Pages / external deployment) -->
+                <button type="button" id="settings-btn" aria-label="API Key Settings" title="Gemini API Key" class="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-surface hover:bg-surfaceHover border border-warm flex items-center justify-center text-ink transition-colors cursor-pointer shrink-0 relative">
+                    <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="3"/>
+                        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33h.01a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51h.01a1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82v.01a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+                    </svg>
+                    <span id="custom-key-dot" class="hidden absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-accent"></span>
+                </button>
+
+                <!-- Light / Dark Theme Toggle -->
+                <button type="button" id="theme-toggle" aria-label="Toggle theme" title="Light / Dark Theme" class="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-surface hover:bg-surfaceHover border border-warm flex items-center justify-center text-ink transition-colors cursor-pointer shrink-0">
+                    <svg id="icon-moon" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+                    </svg>
+                    <svg id="icon-sun" class="w-4 h-4 hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="4.5"/>
+                        <line x1="12" y1="2" x2="12" y2="4.5"/>
+                        <line x1="12" y1="19.5" x2="12" y2="22"/>
+                        <line x1="4.93" y1="4.93" x2="6.7" y2="6.7"/>
+                        <line x1="17.3" y1="17.3" x2="19.07" y2="19.07"/>
+                        <line x1="2" y1="12" x2="4.5" y2="12"/>
+                        <line x1="19.5" y1="12" x2="22" y2="12"/>
+                        <line x1="4.93" y1="19.07" x2="6.7" y2="17.3"/>
+                        <line x1="17.3" y1="6.7" x2="19.07" y2="4.93"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- ==================== MAIN ==================== -->
+    <main class="flex-1 w-full">
+
+        <!-- ==================== HERO & WIDE TRANSLATOR STUDIO ==================== -->
+        <section id="translator" class="hero-ambient pt-8 sm:pt-12 pb-16 sm:pb-24">
+            <div class="wide-container">
+
+                <!-- Hero Intro -->
+                <div id="hero-intro" class="flex flex-col xl:flex-row xl:items-end justify-between gap-6 pb-8 mb-8 border-b divider">
+                    <div class="max-w-3xl">
+                        <div class="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.14em] text-activeAccent mb-3">
+                            <span id="hero-kicker-1">Редакционный ИИ-переводчик</span>
+                            <span class="w-1 h-1 rounded-full" style="background-color: var(--border-strong);"></span>
+                            <span id="hero-kicker-2">Текст и фото справок</span>
+                        </div>
+                        <h1 id="hero-title" class="font-heading font-bold text-3xl sm:text-5xl xl:text-[54px] leading-[1.08] tracking-tight text-ink mb-4">
+                            Переводим с врачебного на&nbsp;человеческий язык
+                        </h1>
+                        <p id="hero-subtitle" class="text-base sm:text-lg text-muted leading-relaxed max-w-2xl">
+                            Вставьте заключение, анализы или загрузите фото бланка. ИИ бережно разберёт термины, отделит важное от страшных формулировок и подготовит вопросы для врача или ветеринара.
+                        </p>
+                    </div>
+
+                    <!-- 3 Hero Stat Badges -->
+                    <div class="grid grid-cols-3 gap-3 sm:gap-4 shrink-0">
+                        <div class="px-4 py-3 rounded-2xl bg-card border border-warm">
+                            <div id="stat-1-val" class="font-heading font-bold text-base sm:text-xl text-ink">2 режима</div>
+                            <div id="stat-1-lbl" class="text-xs text-muted">Люди и питомцы</div>
+                        </div>
+                        <div class="px-4 py-3 rounded-2xl bg-card border border-warm">
+                            <div id="stat-2-val" class="font-heading font-bold text-base sm:text-xl text-ink">Фото + Текст</div>
+                            <div id="stat-2-lbl" class="text-xs text-muted">Мультимодальный ИИ</div>
+                        </div>
+                        <div class="px-4 py-3 rounded-2xl bg-card border border-warm">
+                            <div id="stat-3-val" class="font-heading font-bold text-base sm:text-xl text-ink">Без паники</div>
+                            <div id="stat-3-lbl" class="text-xs text-muted">Спокойный тон</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- STUDIO TOP CONTROL BAR -->
+                <div id="translator-controls" class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 mb-5">
+                    <!-- Left: Mode Switcher + Pet Chips -->
+                    <div class="flex flex-wrap items-center gap-3">
+                        <div class="inline-flex p-1.5 rounded-2xl bg-surface border border-warm" role="tablist">
+                            <button type="button" id="mode-human-btn" role="tab" aria-selected="true" class="inline-flex items-center gap-2 px-4 sm:px-5 py-2.5 rounded-xl text-sm font-semibold transition-all cursor-pointer bg-card text-ink border border-warm">
+                                <svg class="w-4 h-4 text-accent" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                                    <circle cx="12" cy="7" r="4"/>
+                                </svg>
+                                <span id="mode-human-label">Для людей</span>
+                            </button>
+                            <button type="button" id="mode-vet-btn" role="tab" aria-selected="false" class="inline-flex items-center gap-2 px-4 sm:px-5 py-2.5 rounded-xl text-sm font-semibold transition-all cursor-pointer text-muted hover:text-ink border border-transparent">
+                                <svg class="w-4 h-4 text-vet" viewBox="0 0 24 24" fill="currentColor">
+                                    <circle cx="7" cy="9.5" r="2.1"/>
+                                    <circle cx="11" cy="6.5" r="2.1"/>
+                                    <circle cx="15.5" cy="7.5" r="2.1"/>
+                                    <circle cx="18.5" cy="11.5" r="1.9"/>
+                                    <path d="M12.2 11.2c-2.6 0-5.2 2.2-5.2 4.6 0 1.8 1.5 2.7 3.2 2.7 1.1 0 1.6-.4 2.3-.4.8 0 1.4.4 2.4.4 1.6 0 2.9-1 2.9-2.7 0-2.4-2.8-4.6-5.6-4.6z"/>
+                                </svg>
+                                <span id="mode-vet-label">Ветеринария</span>
+                            </button>
+                        </div>
+
+                        <!-- Pet Type Selector (Visible ONLY in Veterinary mode) -->
+                        <div id="pet-selector" class="hidden flex-wrap items-center gap-1.5 pl-1">
+                            <span id="pet-label-prefix" class="text-xs font-medium text-muted mr-1">Питомец:</span>
+                            <button type="button" data-pet-key="cat" class="pet-chip px-3 py-1.5 rounded-full text-xs font-medium border transition-colors cursor-pointer bg-vetSoft text-vet border-vetSoft">Кошка</button>
+                            <button type="button" data-pet-key="dog" class="pet-chip px-3 py-1.5 rounded-full text-xs font-medium border transition-colors cursor-pointer bg-surface text-ink border-warm hover:bg-surfaceHover">Собака</button>
+                            <button type="button" data-pet-key="small" class="pet-chip px-3 py-1.5 rounded-full text-xs font-medium border transition-colors cursor-pointer bg-surface text-ink border-warm hover:bg-surfaceHover">Грызун / птица</button>
+                            <button type="button" data-pet-key="other" class="pet-chip px-3 py-1.5 rounded-full text-xs font-medium border transition-colors cursor-pointer bg-surface text-ink border-warm hover:bg-surfaceHover">Другой</button>
+                        </div>
+                    </div>
+
+                    <!-- Right: Explanation Tone Toggle -->
+                    <div class="flex items-center gap-2.5 self-start lg:self-auto">
+                        <span id="tone-prefix" class="text-xs font-medium text-muted hidden sm:inline">Стиль ответа:</span>
+                        <div class="inline-flex p-1 rounded-xl bg-surface border border-warm">
+                            <button type="button" id="tone-simple-btn" class="px-3.5 py-1.5 rounded-lg text-xs sm:text-sm font-medium transition-all cursor-pointer bg-card text-ink border border-warm">
+                                Совсем просто
+                            </button>
+                            <button type="button" id="tone-detailed-btn" class="px-3.5 py-1.5 rounded-lg text-xs sm:text-sm font-medium transition-all cursor-pointer text-muted hover:text-ink border border-transparent">
+                                Подробно
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- QUICK 1-CLICK EXAMPLE CHIPS -->
+                <div id="examples-bar" class="mb-5 flex flex-wrap items-center gap-2">
+                    <span id="examples-prefix" class="text-xs sm:text-sm font-medium text-muted mr-1 py-1">Примеры в 1 клик:</span>
+                    <div id="example-chips-container" class="flex flex-wrap items-center gap-2"></div>
+                </div>
+
+                <!-- WIDE 2K TWO-COLUMN STUDIO GRID (46% / 54%) -->
+                <div id="translator-grid" class="grid grid-cols-1 lg:grid-cols-[46fr_54fr] gap-6 xl:gap-8 items-stretch">
+
+                    <!-- ==================== LEFT CARD: INPUT ==================== -->
+                    <div id="input-card" class="editorial-card card rounded-bento p-5 sm:p-7 flex flex-col justify-between min-h-[500px] xl:min-h-[580px] relative">
+                        <!-- Card Top Bar -->
+                        <div class="flex items-center justify-between gap-2 pb-4 border-b divider">
+                            <div class="flex items-center gap-2.5">
+                                <span class="w-2.5 h-2.5 rounded-full" style="background-color: var(--border-strong);"></span>
+                                <h2 id="input-card-title" class="font-heading font-semibold text-base sm:text-lg text-ink">Оригинал от врача</h2>
+                            </div>
+                            <span id="char-count" class="font-mono text-xs text-muted">0</span>
+                        </div>
+
+                        <!-- Uploaded Image Preview Strip -->
+                        <div id="image-preview-wrap" class="hidden mt-4 p-3 rounded-2xl bg-surface border border-warm flex items-center justify-between gap-3 fade-slide-up">
+                            <div class="flex items-center gap-3 min-w-0">
+                                <img id="image-preview-thumb" src="" alt="Preview" class="w-14 h-14 rounded-xl object-cover border border-warm shrink-0 bg-card">
+                                <div class="min-w-0">
+                                    <p id="image-preview-name" class="text-sm font-medium text-ink truncate">report.jpg</p>
+                                    <p id="image-preview-hint" class="text-xs text-muted">Изображение будет отправлено в Gemini AI</p>
+                                </div>
+                            </div>
+                            <button type="button" id="remove-image-btn" class="px-3 py-1.5 rounded-xl text-xs font-medium bg-card hover:bg-urgentBg text-muted hover:text-urgentText border border-warm transition-colors cursor-pointer shrink-0">
+                                Удалить
+                            </button>
+                        </div>
+
+                        <!-- Textarea + Drag-and-Drop Zone -->
+                        <div id="input-dropzone" class="relative flex-1 my-4 flex flex-col rounded-2xl transition-colors">
+                            <textarea
+                                id="medical-input"
+                                rows="11"
+                                class="w-full flex-1 resize-none bg-transparent font-mono text-sm sm:text-[14.5px] leading-relaxed text-ink placeholder:text-muted focus:outline-none p-1"
+                            ></textarea>
+                        </div>
+
+                        <!-- Card Bottom Bar -->
+                        <div class="pt-4 border-t divider flex flex-wrap items-center justify-between gap-3">
+                            <div class="flex items-center gap-2">
+                                <input type="file" id="file-upload-input" accept="image/png,image/jpeg,image/webp" class="hidden">
+                                <button type="button" id="upload-trigger-btn" class="inline-flex items-center gap-2 px-3.5 py-2.5 rounded-xl text-xs sm:text-sm font-medium bg-surface hover:bg-surfaceHover text-ink border border-warm transition-colors cursor-pointer">
+                                    <svg class="w-4 h-4 text-activeAccent" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+                                        <rect x="3" y="3" width="18" height="18" rx="3"/>
+                                        <circle cx="8.5" cy="8.5" r="1.5"/>
+                                        <polyline points="21 15 16 10 5 21"/>
+                                    </svg>
+                                    <span id="upload-btn-label">Фото справки</span>
+                                </button>
+
+                                <button type="button" id="clear-btn" class="px-3 py-2.5 rounded-xl text-xs sm:text-sm font-medium text-muted hover:text-ink hover:bg-surface transition-colors cursor-pointer">
+                                    Очистить
+                                </button>
+                            </div>
+
+                            <!-- Primary AI Translate Button -->
+                            <button type="button" id="translate-btn" class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl text-sm sm:text-base font-semibold bg-activeAccent hover:bg-activeAccentHover text-white transition-all active:scale-[0.98] cursor-pointer">
+                                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M12 3l1.9 5.8L20 11l-6.1 2.2L12 19l-1.9-5.8L4 11l6.1-2.2L12 3z"/>
+                                </svg>
+                                <span id="translate-btn-label">Расшифровать через ИИ</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- ==================== RIGHT CARD: AI OUTPUT ==================== -->
+                    <div id="output-card" class="editorial-card card rounded-bento p-5 sm:p-7 flex flex-col min-h-[500px] xl:min-h-[580px] relative">
+                        <!-- Print-Only Header -->
+                        <div id="print-header" class="hidden pb-4 mb-5 border-b divider">
+                            <div id="print-title" class="font-heading font-bold text-2xl">понятно. — Памятка для приёма</div>
+                            <p id="print-sub" class="text-xs text-muted mt-1">Подготовлено с помощью ИИ-переводчика. Носит справочный характер и не заменяет консультацию специалиста.</p>
+                        </div>
+
+                        <!-- Output Header -->
+                        <div class="flex flex-wrap items-center justify-between gap-2 pb-4 border-b divider">
+                            <div class="flex items-center gap-2.5">
+                                <span class="w-2.5 h-2.5 rounded-full bg-activeAccent"></span>
+                                <h2 id="output-card-title" class="font-heading font-semibold text-base sm:text-lg text-ink">На понятном языке</h2>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <span id="source-badge" class="hidden text-xs font-medium px-2.5 py-1 rounded-full bg-activeSoft text-activeAccent border border-activeSoft">
+                                    Gemini AI
+                                </span>
+                                <button type="button" id="retranslate-ai-btn" class="hidden text-xs font-medium px-2.5 py-1 rounded-full bg-surface hover:bg-surfaceHover text-ink border border-warm transition-colors cursor-pointer">
+                                    Перевести через ИИ
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Fallback Notice Banner (Shown if AI network fails and offline analyzer takes over) -->
+                        <div id="fallback-banner" class="hidden mt-4 p-3.5 rounded-2xl bg-amberBg border border-amberBorder flex flex-wrap items-center justify-between gap-3 fade-slide-up">
+                            <div class="text-xs sm:text-sm text-amberText leading-snug">
+                                <strong id="fallback-title" class="font-semibold">ИИ временно недоступен — показан офлайн-разбор.</strong>
+                                <span id="fallback-desc" class="block opacity-90 mt-0.5">Проверьте интернет или укажите свой Gemini API-ключ в настройках (⚙).</span>
+                            </div>
+                            <div class="flex items-center gap-2 shrink-0">
+                                <button type="button" id="retry-ai-btn" class="px-3 py-1.5 rounded-xl text-xs font-semibold bg-card text-ink border border-warm hover:bg-surface transition-colors cursor-pointer">
+                                    Повторить ИИ
+                                </button>
+                                <button type="button" id="open-settings-inline-btn" class="px-3 py-1.5 rounded-xl text-xs font-semibold bg-accent text-white hover:bg-accentHover transition-colors cursor-pointer">
+                                    API-ключ
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- STATE 1: Empty Default -->
+                        <div id="state-empty" class="flex-1 flex flex-col items-center justify-center text-center py-12 px-4">
+                            <div class="w-20 h-20 rounded-2xl bg-surface border border-warm flex items-center justify-center mb-5">
+                                <svg class="w-10 h-10" viewBox="0 0 48 48" fill="none">
+                                    <rect x="8" y="6" width="24" height="32" rx="4" stroke="currentColor" class="text-ink" stroke-width="2"/>
+                                    <line x1="14" y1="15" x2="26" y2="15" stroke="currentColor" class="text-muted" stroke-width="2" stroke-linecap="round"/>
+                                    <line x1="14" y1="21" x2="22" y2="21" stroke="currentColor" class="text-muted" stroke-width="2" stroke-linecap="round"/>
+                                    <line x1="14" y1="27" x2="25" y2="27" stroke="currentColor" class="text-muted" stroke-width="2" stroke-linecap="round"/>
+                                    <circle cx="33" cy="33" r="9" fill="var(--bg-card)" stroke="var(--active-accent)" stroke-width="2.2"/>
+                                    <path d="M30 33.5L32.2 35.5L36.5 31" stroke="var(--active-accent)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </div>
+                            <h3 id="empty-title" class="font-heading font-semibold text-xl text-ink mb-2">
+                                Спокойная расшифровка появится здесь
+                            </h3>
+                            <p id="empty-desc" class="text-sm text-muted max-w-sm leading-relaxed">
+                                Вставьте текст слева, прикрепите фотографию анализа или нажмите на готовый пример — разложим всё по полочкам.
+                            </p>
+                        </div>
+
+                        <!-- STATE 2: AI Loading Skeleton -->
+                        <div id="state-loading" class="hidden flex-1 flex flex-col justify-center py-8 space-y-6">
+                            <div class="flex items-center gap-3 px-4 py-3 rounded-2xl bg-activeSoft border border-activeSoft w-fit">
+                                <span class="w-2.5 h-2.5 rounded-full bg-activeAccent ai-beacon"></span>
+                                <span id="loading-status-text" class="text-sm font-medium text-ink">Читаю термины...</span>
+                            </div>
+
+                            <div class="space-y-3 animate-warm-pulse">
+                                <div class="h-6 bg-surface rounded-xl w-2/3"></div>
+                                <div class="h-3.5 bg-surface rounded-full w-full"></div>
+                                <div class="h-3.5 bg-surface rounded-full w-11/12"></div>
+                                <div class="h-3.5 bg-surface rounded-full w-4/5"></div>
+                            </div>
+
+                            <div class="p-4 rounded-2xl bg-surface border border-warm space-y-2.5 animate-warm-pulse">
+                                <div class="h-3.5 bg-surfaceHover rounded-full w-1/3"></div>
+                                <div class="h-3 bg-surfaceHover rounded-full w-5/6"></div>
+                                <div class="h-3 bg-surfaceHover rounded-full w-2/3"></div>
+                            </div>
+
+                            <div class="flex flex-wrap gap-2 animate-warm-pulse">
+                                <div class="h-7 bg-surface rounded-lg w-24"></div>
+                                <div class="h-7 bg-surface rounded-lg w-32"></div>
+                                <div class="h-7 bg-surface rounded-lg w-28"></div>
+                            </div>
+                        </div>
+
+                        <!-- STATE 3: Structured Result -->
+                        <div id="state-result" class="hidden flex-1 flex flex-col justify-between pt-5 space-y-5 fade-slide-up">
+                            <div class="space-y-5">
+                                <!-- Title + Status Pill -->
+                                <div class="space-y-2.5">
+                                    <div class="flex flex-wrap items-center justify-between gap-2">
+                                        <h3 id="res-title" class="font-heading font-bold text-xl sm:text-2xl text-ink leading-snug"></h3>
+                                        <span id="res-status-pill" class="inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1 rounded-full border shrink-0"></span>
+                                    </div>
+                                    <p id="res-summary" class="text-[15px] font-medium text-ink leading-relaxed bg-surface p-3.5 rounded-2xl border border-warm"></p>
+                                </div>
+
+                                <!-- Plain Explanation -->
+                                <div>
+                                    <h4 id="res-explanation-heading" class="font-heading font-semibold text-xs uppercase tracking-widest text-muted mb-2">Что это значит</h4>
+                                    <div id="res-explanation" class="text-sm sm:text-[15px] leading-relaxed text-ink space-y-2.5"></div>
+                                </div>
+
+                                <!-- Normal or Needs Attention Box -->
+                                <div id="res-attention-box" class="rounded-2xl p-4 border">
+                                    <h4 class="font-heading font-semibold text-xs uppercase tracking-widest mb-2.5 flex items-center gap-2">
+                                        <span id="res-attention-dot" class="w-2 h-2 rounded-full"></span>
+                                        <span id="res-attention-heading">Норма или стоит обратить внимание</span>
+                                    </h4>
+                                    <ul id="res-attention-list" class="space-y-1.5 text-sm leading-relaxed"></ul>
+                                </div>
+
+                                <!-- Interactive Terms Dictionary -->
+                                <div id="res-terms-wrap">
+                                    <div class="flex items-center justify-between gap-2 mb-2">
+                                        <h4 id="res-terms-heading" class="font-heading font-semibold text-xs uppercase tracking-widest text-muted">Ключевые термины</h4>
+                                        <span id="res-terms-hint" class="text-[11px] text-muted hidden sm:inline">Нажмите на термин для пояснения</span>
+                                    </div>
+                                    <div id="res-terms-list" class="flex flex-wrap gap-2"></div>
+                                </div>
+
+                                <!-- Questions for Doctor / Vet -->
+                                <div class="bg-surface rounded-2xl p-4 sm:p-5 border border-warm">
+                                    <h4 id="res-questions-heading" class="font-heading font-semibold text-xs uppercase tracking-widest text-muted mb-3">
+                                        Что спросить у врача на приёме
+                                    </h4>
+                                    <ul id="res-questions-list" class="space-y-2.5 text-sm text-ink"></ul>
+                                </div>
+                            </div>
+
+                            <!-- Bottom Result Action Bar -->
+                            <div id="result-actions" class="pt-4 border-t divider flex flex-wrap items-center gap-2">
+                                <button type="button" id="copy-full-btn" class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs sm:text-sm font-medium bg-surface hover:bg-surfaceHover text-ink border border-warm transition-colors cursor-pointer">
+                                    <svg class="w-3.5 h-3.5 text-activeAccent" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <rect x="9" y="9" width="13" height="13" rx="2"/>
+                                        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+                                    </svg>
+                                    <span id="copy-full-label">Скопировать расшифровку</span>
+                                </button>
+                                <button type="button" id="copy-questions-btn" class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs sm:text-sm font-medium bg-surface hover:bg-surfaceHover text-ink border border-warm transition-colors cursor-pointer">
+                                    <svg class="w-3.5 h-3.5 text-activeAccent" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                                    </svg>
+                                    <span id="copy-questions-label">Скопировать вопросы врачу</span>
+                                </button>
+                                <button type="button" id="print-memo-btn" class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs sm:text-sm font-medium bg-surface hover:bg-surfaceHover text-ink border border-warm transition-colors cursor-pointer sm:ml-auto">
+                                    <svg class="w-3.5 h-3.5 text-ink" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <polyline points="6 9 6 2 18 2 18 9"/>
+                                        <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/>
+                                        <rect x="6" y="14" width="12" height="8"/>
+                                    </svg>
+                                    <span id="print-btn-label">Распечатать памятку</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- COMPACT RECENT HISTORY STRIP -->
+                <div id="history-bar" class="hidden mt-6 editorial-card card rounded-2xl px-4 sm:px-5 py-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                    <div class="flex items-center gap-3 min-w-0 flex-1">
+                        <span id="history-label" class="text-xs font-semibold uppercase tracking-wider text-muted shrink-0">История сессии:</span>
+                        <div id="history-items" class="flex items-center gap-2 overflow-x-auto no-scrollbar py-0.5"></div>
+                    </div>
+                    <button type="button" id="clear-history-btn" class="text-xs font-medium text-muted hover:text-urgentText transition-colors cursor-pointer shrink-0 self-end sm:self-auto">
+                        Очистить историю
+                    </button>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- ==================== VETERINARY DEDICATED 4-COL BENTO SECTION ==================== -->
+        <section id="veterinary-section" class="py-16 sm:py-24 border-t">
+            <div class="wide-container">
+                <div class="flex flex-col lg:flex-row lg:items-end justify-between gap-6 mb-10">
+                    <div class="max-w-2xl">
+                        <div class="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.14em] text-vet mb-2.5">
+                            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
+                                <circle cx="7" cy="9.5" r="2.1"/>
+                                <circle cx="11" cy="6.5" r="2.1"/>
+                                <circle cx="15.5" cy="7.5" r="2.1"/>
+                                <circle cx="18.5" cy="11.5" r="1.9"/>
+                                <path d="M12.2 11.2c-2.6 0-5.2 2.2-5.2 4.6 0 1.8 1.5 2.7 3.2 2.7 1.1 0 1.6-.4 2.3-.4.8 0 1.4.4 2.4.4 1.6 0 2.9-1 2.9-2.7 0-2.4-2.8-4.6-5.6-4.6z"/>
+                            </svg>
+                            <span id="vet-sec-kicker">Специальный раздел</span>
+                        </div>
+                        <h2 id="vet-sec-title" class="font-heading font-bold text-3xl sm:text-4xl xl:text-[42px] text-ink tracking-tight leading-tight">
+                            Ветеринария: понимаем тех, кто&nbsp;не&nbsp;может сказать
+                        </h2>
+                    </div>
+                    <button type="button" id="jump-to-vet-btn" class="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl text-sm font-semibold bg-vet hover:bg-vetHover text-white transition-all active:scale-[0.98] cursor-pointer self-start lg:self-auto shrink-0">
+                        <span id="vet-jump-label-1">Открыть ветеринарный переводчик</span>
+                        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="12" y1="19" x2="12" y2="5"/>
+                            <polyline points="5 12 12 5 19 12"/>
+                        </svg>
+                    </button>
+                </div>
+
+                <!-- 4-Column Bento Grid -->
+                <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-5 xl:gap-6 items-stretch">
+
+                    <!-- Card 1: Human vs Cat Reference Norms -->
+                    <div class="editorial-card bento-card rounded-bento p-6 flex flex-col justify-between">
+                        <div>
+                            <div class="flex items-center justify-between mb-5">
+                                <span id="vet-norm-badge" class="text-xs font-semibold uppercase tracking-wider text-vet px-2.5 py-1 rounded-full bg-vetSoft border border-vetSoft">Важно знать</span>
+                                <svg class="w-5 h-5 text-vet" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+                                    <line x1="12" y1="9" x2="12" y2="13"/>
+                                    <line x1="12" y1="17" x2="12.01" y2="17"/>
+                                </svg>
+                            </div>
+                            <h3 id="vet-norm-title" class="font-heading font-semibold text-xl text-ink mb-2.5">
+                                Почему анализы животных нельзя гуглить по человеческим нормам
+                            </h3>
+                            <p id="vet-norm-desc" class="text-sm text-muted leading-relaxed mb-5">
+                                У кошек и собак другой обмен веществ: то, что для человека — «страшное отклонение», для питомца может быть абсолютной нормой (и наоборот).
+                            </p>
+                        </div>
+
+                        <div class="rounded-2xl bg-surface border border-warm p-3.5 font-mono text-xs space-y-2">
+                            <div class="grid grid-cols-3 text-muted pb-1.5 border-b divider">
+                                <span id="tbl-col-1">Показатель</span>
+                                <span id="tbl-col-2">Человек</span>
+                                <span id="tbl-col-3" class="text-vet font-semibold">Кошка</span>
+                            </div>
+                            <div class="grid grid-cols-3 text-ink">
+                                <span id="tbl-r1">Темп-ра</span>
+                                <span>36.6 °C</span>
+                                <span class="font-semibold">38.0–39.2</span>
+                            </div>
+                            <div class="grid grid-cols-3 text-ink">
+                                <span id="tbl-r2">Креатинин</span>
+                                <span id="tbl-r2-h">до 106</span>
+                                <span id="tbl-r2-c" class="font-semibold">до 140–160</span>
+                            </div>
+                            <div class="grid grid-cols-3 text-ink">
+                                <span id="tbl-r3">Пульс</span>
+                                <span>60–80</span>
+                                <span class="font-semibold">120–160</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Card 2 & 3 (Span 2): Interactive Bilingual Vet Glossary -->
+                    <div class="editorial-card bento-card rounded-bento p-6 md:col-span-2 flex flex-col justify-between">
+                        <div>
+                            <div class="flex flex-wrap items-center justify-between gap-2 mb-5">
+                                <div>
+                                    <h3 id="vet-gloss-heading" class="font-heading font-semibold text-xl text-ink">Мини-словарик ветеринарных терминов</h3>
+                                    <p id="vet-gloss-sub" class="text-xs sm:text-sm text-muted mt-0.5">Нажмите на любую карточку, чтобы увидеть спокойную расшифровку</p>
+                                </div>
+                                <span id="vet-gloss-count" class="font-mono text-xs px-2.5 py-1 rounded-full bg-surface text-muted border border-warm">6 частых слов</span>
+                            </div>
+
+                            <div id="vet-glossary-grid" class="grid grid-cols-2 sm:grid-cols-3 gap-2.5 mb-4"></div>
+                        </div>
+
+                        <div class="rounded-2xl bg-surface border border-warm p-4 sm:p-5">
+                            <div class="flex items-center gap-2 mb-1.5">
+                                <span class="w-2 h-2 rounded-full bg-vet"></span>
+                                <h4 id="vet-glossary-title" class="font-heading font-semibold text-base text-ink"></h4>
+                            </div>
+                            <p id="vet-glossary-desc" class="text-sm text-muted leading-relaxed"></p>
+                        </div>
+                    </div>
+
+                    <!-- Card 4: Before the Vet Visit Checklist -->
+                    <div class="editorial-card bento-card rounded-bento p-6 flex flex-col justify-between">
+                        <div>
+                            <div class="flex items-center justify-between mb-5">
+                                <span id="vet-check-kicker" class="text-xs font-semibold uppercase tracking-wider text-muted">Памятка владельцу</span>
+                                <svg class="w-5 h-5 text-vet" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M9 11l3 3L22 4"/>
+                                    <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
+                                </svg>
+                            </div>
+                            <h3 id="vet-check-title" class="font-heading font-semibold text-xl text-ink mb-4">
+                                Что взять с собой в ветклинику
+                            </h3>
+                            <ul id="vet-checklist-ul" class="space-y-3 text-sm text-muted"></ul>
+                        </div>
+
+                        <div class="pt-5 mt-5 border-t divider">
+                            <button type="button" id="jump-to-vet-btn-2" class="w-full py-2.5 px-4 rounded-xl text-xs sm:text-sm font-semibold bg-vetSoft hover:bg-surfaceHover text-vet border border-vetSoft transition-colors cursor-pointer">
+                                Перевести анализы питомца →
+                            </button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== HOW IT WORKS (4-COLUMN 2K BENTO) ==================== -->
+        <section id="how-it-works" class="py-16 sm:py-24 border-t">
+            <div class="wide-container">
+                <div class="max-w-2xl mb-10">
+                    <span id="how-kicker" class="text-xs font-semibold uppercase tracking-[0.14em] text-accent mb-2.5 block">Как это работает</span>
+                    <h2 id="how-title" class="font-heading font-bold text-3xl sm:text-4xl text-ink tracking-tight">
+                        Четыре шага от тревожного бланка к&nbsp;спокойному плану
+                    </h2>
+                </div>
+
+                <div id="how-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 xl:gap-6"></div>
+            </div>
+        </section>
+
+        <!-- ==================== TRUST & DISCLAIMER SECTION ==================== -->
+        <section id="privacy-section" class="pb-20 sm:pb-24">
+            <div class="wide-container">
+                <div class="editorial-card card rounded-bento p-6 sm:p-10 xl:p-12">
+                    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+                        <div class="lg:col-span-7 space-y-4">
+                            <span class="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.14em] text-accent">
+                                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                                </svg>
+                                <span id="priv-kicker">Честная позиция</span>
+                            </span>
+                            <h2 id="priv-title" class="font-heading font-bold text-2xl sm:text-3xl xl:text-4xl text-ink leading-tight">
+                                Мы не заменяем врача и&nbsp;ветеринара, но&nbsp;помогаем говорить с&nbsp;ними на&nbsp;одном языке
+                            </h2>
+                            <p id="priv-desc" class="text-sm sm:text-base text-muted leading-relaxed max-w-2xl">
+                                Сервис не ставит диагнозы и не подбирает лечение. ИИ помогает снять лишнее напряжение, перевести сложные слова и подготовить осмысленные вопросы к специалисту. При острых симптомах всегда обращайтесь за очной помощью.
+                            </p>
+                        </div>
+
+                        <div class="lg:col-span-5">
+                            <div class="rounded-card bg-surface border border-warm p-5 sm:p-6 space-y-4">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-10 h-10 rounded-xl bg-accentSoft border border-accentSoft flex items-center justify-center shrink-0">
+                                        <svg class="w-5 h-5 text-accent" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+                                            <rect x="3" y="11" width="18" height="11" rx="2"/>
+                                            <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                                        </svg>
+                                    </div>
+                                    <h3 id="priv-card-title" class="font-heading font-semibold text-base text-ink">Бережное отношение к данным</h3>
+                                </div>
+                                <p id="priv-card-desc" class="text-sm text-muted leading-relaxed">
+                                    Перед отправкой фото или текста рекомендуем скрыть ФИО и паспортные данные. История расшифровок хранится только локально в вашем браузере и очищается в один клик.
+                                </p>
+                                <div id="priv-badges" class="flex flex-wrap gap-2"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- ==================== EDITORIAL FOOTER ==================== -->
+    <footer class="w-full border-t bg-page">
+        <div class="wide-container py-10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
+            <div class="space-y-1.5">
+                <a href="#" class="font-heading font-bold text-xl tracking-tight text-ink inline-flex items-center">
+                    <span id="footer-brand">понятно</span><span class="text-activeAccent">.</span>
+                </a>
+                <p id="footer-note" class="text-xs text-muted max-w-md leading-relaxed">
+                    Учебный и портфолийный ИИ-сервис перевода медицинских и ветеринарных текстов. Расшифровка носит информационный характер.
+                </p>
+            </div>
+            <div class="flex flex-wrap items-center gap-6 text-sm text-muted">
+                <a href="#translator" id="foot-nav-1" class="hover:text-ink transition-colors">Переводчик</a>
+                <a href="#veterinary-section" id="foot-nav-2" class="hover:text-ink transition-colors">Ветеринария</a>
+                <a href="#how-it-works" id="foot-nav-3" class="hover:text-ink transition-colors">Как работает</a>
+                <a href="#privacy-section" id="foot-nav-4" class="hover:text-ink transition-colors">Приватность</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- ==================== OPTIONAL API KEY SETTINGS MODAL ==================== -->
+    <div id="settings-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4" style="background-color: rgba(20, 18, 16, 0.65);">
+        <div class="editorial-card card rounded-bento max-w-md w-full p-6 space-y-5 fade-slide-up">
+            <div class="flex items-center justify-between gap-3 pb-3 border-b divider">
+                <h3 id="modal-title" class="font-heading font-semibold text-lg text-ink">Настройки Gemini API</h3>
+                <button type="button" id="modal-close-btn" class="w-8 h-8 rounded-full bg-surface hover:bg-surfaceHover text-ink flex items-center justify-center cursor-pointer">✕</button>
+            </div>
+            <div class="space-y-3">
+                <p id="modal-desc" class="text-xs sm:text-sm text-muted leading-relaxed">
+                    Вставьте сюда свой бесплатный Gemini API-ключ (хранится только в вашем браузере).
+                </p>
+                <label for="api-key-input" id="modal-label" class="block text-xs font-semibold uppercase tracking-wider text-muted">Gemini API Key (опционально)</label>
+                <input type="password" id="api-key-input" placeholder="AIza..." class="w-full px-3.5 py-2.5 rounded-xl bg-surface border border-warm text-sm font-mono text-ink placeholder:text-muted focus:outline-none">
+            </div>
+            <div class="flex items-center justify-between gap-2 pt-2">
+                <button type="button" id="modal-clear-key-btn" class="px-3.5 py-2 rounded-xl text-xs font-medium text-muted hover:text-urgentText hover:bg-surface transition-colors cursor-pointer">
+                    Сбросить ключ
+                </button>
+                <button type="button" id="modal-save-key-btn" class="px-5 py-2.5 rounded-xl text-xs sm:text-sm font-semibold bg-accent hover:bg-accentHover text-white transition-colors cursor-pointer">
+                    Сохранить
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== FLOATING TERM TOOLTIP ==================== -->
+    <div id="term-tooltip" role="tooltip" class="hidden fixed z-50 max-w-xs rounded-2xl p-4 border border-strong pointer-events-auto" style="background-color: var(--text-primary); color: var(--bg-page); box-shadow: var(--shadow-float);">
+        <div class="flex items-center justify-between gap-3 mb-1.5">
+            <span id="tooltip-term" class="font-mono text-xs font-semibold" style="color: var(--accent);"></span>
+            <button type="button" id="tooltip-close" aria-label="Close" class="opacity-70 hover:opacity-100 text-xs leading-none cursor-pointer">✕</button>
+        </div>
+        <p id="tooltip-desc" class="text-xs sm:text-[13px] leading-relaxed opacity-95"></p>
+    </div>
+
+    <!-- ==================== WARM TOAST NOTIFICATION ==================== -->
+    <div id="toast" class="fixed bottom-5 right-5 z-50 transform translate-y-20 opacity-0 transition-all duration-300 pointer-events-none">
+        <div class="px-4 py-3 rounded-2xl border border-strong flex items-center gap-2.5 text-sm max-w-sm" style="background-color: var(--text-primary); color: var(--bg-page); box-shadow: var(--shadow-float);">
+            <span class="w-2 h-2 rounded-full bg-accent shrink-0"></span>
+            <span id="toast-message">Готово</span>
+        </div>
+    </div>
+
+    <!-- ==================== APPLICATION SCRIPT ==================== -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // ---------------------------------------------------------
+            // 1. STATE & STORAGE KEYS
+            // ---------------------------------------------------------
+            const KEYS = {
+                HISTORY: 'plainly_history_v2',
+                THEME: 'plainly_theme_v2',
+                LANG: 'plainly_lang_v2',
+                APIKEY: 'plainly_gemini_apikey_v1'
+            };
+
+            let currentLang = 'ru'; // 'ru' | 'en'
+            let currentMode = 'human'; // 'human' | 'vet'
+            let currentPetKey = 'cat'; // 'cat' | 'dog' | 'small' | 'other'
+            let currentTone = 'simple'; // 'simple' | 'detailed'
+            let currentResult = null;
+            let currentResultSource = 'ai'; // 'ai' | 'reference' | 'offline'
+            let activeExampleId = null;
+            let activeVetGlossaryKey = 'ckd';
+            let uploadedImage = null;
+            let loadingInterval = null;
+            let toastTimer = null;
+            let activeTooltipEl = null;
+
+            // ---------------------------------------------------------
+            // 2. FULL BILINGUAL I18N DICTIONARY (RU / EN)
+            // ---------------------------------------------------------
+            const I18N = {
+                ru: {
+                    pageTitle: 'понятно. — ИИ-переводчик с медицинского и ветеринарного',
+                    brand: 'понятно',
+                    tagline: 'Медицина и ветеринария без тревоги',
+                    navTranslator: 'Переводчик',
+                    navVet: 'Ветеринария',
+                    navHow: 'Как это работает',
+                    navPrivacy: 'Приватность',
+                    aiBadge: 'Gemini AI',
+                    heroKicker1: 'Редакционный ИИ-переводчик',
+                    heroKicker2: 'Текст и фото справок',
+                    heroTitle: 'Переводим с врачебного на\u00A0человеческий язык',
+                    heroSubtitle: 'Вставьте заключение, анализы или загрузите фото бланка. ИИ бережно разберёт термины, отделит важное от страшных формулировок и подготовит вопросы для врача или ветеринара.',
+                    stat1Val: '2 режима', stat1Lbl: 'Люди и питомцы',
+                    stat2Val: 'Фото + Текст', stat2Lbl: 'Мультимодальный ИИ',
+                    stat3Val: 'Без паники', stat3Lbl: 'Спокойный тон',
+                    modeHuman: 'Для людей',
+                    modeVet: 'Ветеринария',
+                    petPrefix: 'Питомец:',
+                    pets: { cat: 'Кошка', dog: 'Собака', small: 'Грызун / птица', other: 'Другой' },
+                    tonePrefix: 'Стиль ответа:',
+                    toneSimple: 'Совсем просто',
+                    toneDetailed: 'Подробно',
+                    examplesPrefix: 'Примеры в 1 клик:',
+                    inputTitleHuman: 'Оригинал от врача',
+                    inputTitleVet: 'Оригинал от ветеринара',
+                    placeholderHuman: 'Вставьте текст справки, анализа крови, УЗИ или заключения врача...\n\nИли прикрепите фото/скриншот бланка кнопкой ниже — Gemini AI распознает его и переведёт на понятный язык.',
+                    placeholderVet: 'Вставьте биохимию крови питомца, описание УЗИ, анализ мочи или выписку из ветклиники...\n\nИли прикрепите фото бланка — Gemini AI расшифрует его с учётом норм для вашего животного.',
+                    imageHint: 'Изображение будет отправлено в Gemini AI',
+                    removeImg: 'Удалить',
+                    uploadBtn: 'Фото справки',
+                    clearBtn: 'Очистить',
+                    translateBtn: 'Расшифровать через ИИ',
+                    outputTitle: 'На понятном языке',
+                    retranslateAi: 'Перевести через ИИ',
+                    badgeAi: 'Gemini AI',
+                    badgeRef: 'Эталонный пример',
+                    badgeOffline: 'Офлайн-разбор',
+                    fallbackTitle: 'ИИ временно недоступен — показан офлайн-разбор.',
+                    fallbackDesc: 'Проверьте сеть или укажите свой Gemini API-ключ в настройках (⚙).',
+                    retryAi: 'Повторить ИИ',
+                    apiKeyBtn: 'API-ключ',
+                    emptyTitle: 'Спокойная расшифровка появится здесь',
+                    emptyDesc: 'Вставьте текст слева, прикрепите фотографию анализа или нажмите на готовый пример — разложим всё по полочкам.',
+                    loadingHuman: ['Читаю термины и показатели...', 'Перевожу на понятный язык...', 'Убираю лишний канцелярит...', 'Собираю вопросы для врача...'],
+                    loadingVet: ['Читаю ветеринарные термины...', 'Сверяю видовые нормы питомца...', 'Перевожу на понятный язык...', 'Собираю вопросы для ветеринара...'],
+                    resExpHeading: 'Что это значит',
+                    resAttHeading: 'Норма или стоит обратить внимание',
+                    resTermsHeading: 'Ключевые термины',
+                    resTermsHint: 'Нажмите на термин для пояснения',
+                    resQHeadingHuman: 'Что спросить у врача на приёме',
+                    resQHeadingVet: 'Что спросить у ветеринара на приёме',
+                    copyFull: 'Скопировать расшифровку',
+                    copyQHuman: 'Скопировать вопросы врачу',
+                    copyQVet: 'Скопировать вопросы ветеринару',
+                    printBtn: 'Распечатать памятку',
+                    printTitle: 'понятно. — Памятка для приёма',
+                    printSub: 'Подготовлено с помощью ИИ-переводчика. Носит справочный характер и не заменяет консультацию специалиста.',
+                    historyLabel: 'История сессии:',
+                    clearHistory: 'Очистить историю',
+                    vetSecKicker: 'Специальный раздел',
+                    vetSecTitle: 'Ветеринария: понимаем тех, кто\u00A0не\u00A0может сказать',
+                    vetJump1: 'Открыть ветеринарный переводчик',
+                    vetJump2: 'Перевести анализы питомца →',
+                    vetNormBadge: 'Важно знать',
+                    vetNormTitle: 'Почему анализы животных нельзя гуглить по человеческим нормам',
+                    vetNormDesc: 'У кошек и собак другой обмен веществ: то, что для человека — «страшное отклонение», для питомца может быть абсолютной нормой (и наоборот).',
+                    tblCol1: 'Показатель', tblCol2: 'Человек', tblCol3: 'Кошка',
+                    tblR1: 'Темп-ра', tblR2: 'Креатинин', tblR2H: 'до 106', tblR2C: 'до 140–160', tblR3: 'Пульс',
+                    vetGlossHeading: 'Мини-словарик ветеринарных терминов',
+                    vetGlossSub: 'Нажмите на любую карточку, чтобы увидеть спокойную расшифровку',
+                    vetGlossCount: '6 частых слов',
+                    vetCheckKicker: 'Памятка владельцу',
+                    vetCheckTitle: 'Что взять с собой в ветклинику',
+                    vetChecklist: [
+                        ['Ветпаспорт и прошлые анализы', 'врачу важно видеть динамику показателей.'],
+                        ['Фото корма и лекарств', 'точное название и дозировки сэкономят время.'],
+                        ['Видео симптомов', 'если питомец кашляет или хромает дома, в клинике он может «забыть» об этом от стресса.'],
+                        ['Плед с запахом дома', 'положите в переноску, чтобы снизить тревогу.']
+                    ],
+                    howKicker: 'Как это работает',
+                    howTitle: 'Четыре шага от тревожного бланка к\u00A0спокойному плану',
+                    howSteps: [
+                        { num: '01', title: 'Фото или текст', desc: 'Скопируйте выписку из электронной карты или просто прикрепите фотографию бумажного бланка.' },
+                        { num: '02', title: 'ИИ-разбор Gemini', desc: 'Модель учитывает контекст (человек или вид питомца) и переводит сухие формулировки без запугивания.' },
+                        { num: '03', title: 'Интерактивный словарь', desc: 'Каждый сложный термин выделяется отдельно — достаточно нажать на него, чтобы прочитать простое значение.' },
+                        { num: '04', title: 'Готовый список вопросов', desc: 'Скопируйте вопросы в заметки или распечатайте аккуратную памятку, чтобы ничего не забыть на приёме.' }
+                    ],
+                    privKicker: 'Честная позиция',
+                    privTitle: 'Мы не заменяем врача и\u00A0ветеринара, но\u00A0помогаем говорить с\u00A0ними на\u00A0одном языке',
+                    privDesc: 'Сервис не ставит диагнозы и не подбирает лечение. ИИ помогает снять лишнее напряжение, перевести сложные слова и подготовить осмысленные вопросы к специалисту. При острых симптомах всегда обращайтесь за очной помощью.',
+                    privCardTitle: 'Бережное отношение к данным',
+                    privCardDesc: 'Перед отправкой фото или текста рекомендуем скрыть ФИО и паспортные данные. История расшифровок хранится только локально в вашем браузере и очищается в один клик.',
+                    privBadges: ['Без регистрации', 'Локальная история', 'Печать памятки'],
+                    footerNote: 'Учебный и портфолийный ИИ-сервис перевода медицинских и ветеринарных текстов. Расшифровка носит информационный характер.',
+                    modalTitle: 'Настройки Gemini API',
+                    modalDesc: 'В среде предпросмотра ключ подставляется автоматически. Если вы разместите этот сайт на GitHub Pages или своём домене, вставьте сюда свой бесплатный Gemini API-ключ (хранится только в вашем браузере).',
+                    modalLabel: 'Gemini API Key (опционально)',
+                    modalClear: 'Сбросить ключ',
+                    modalSave: 'Сохранить',
+                    toasts: {
+                        emptyInput: 'Вставьте текст, загрузите фото или выберите пример выше.',
+                        imgAttached: 'Фото прикреплено — нажмите «Расшифровать через ИИ»',
+                        imgBadType: 'Пожалуйста, выберите изображение (JPG, PNG или WebP).',
+                        imgTooBig: 'Файл слишком большой (максимум 10 МБ).',
+                        copiedFull: 'Полная расшифровка скопирована',
+                        copiedQ: 'Список вопросов скопирован',
+                        copyFail: 'Не удалось скопировать',
+                        historyLoaded: 'Загружено из истории',
+                        historyCleared: 'История очищена',
+                        vetModeOn: 'Переключено в режим «Ветеринария»',
+                        keySaved: 'API-ключ сохранён локально',
+                        keyCleared: 'Свой API-ключ удалён'
+                    },
+                    chars: (n) => {
+                        const w = n % 10 === 1 && n % 100 !== 11 ? 'символ' : (n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 10 || n % 100 >= 20)) ? 'символа' : 'символов';
+                        return `${n} ${w}`;
+                    }
+                },
+                en: {
+                    pageTitle: 'plainly. — AI Medical & Veterinary Translator',
+                    brand: 'plainly',
+                    tagline: 'Calm medical & veterinary clarity',
+                    navTranslator: 'Translator',
+                    navVet: 'Veterinary',
+                    navHow: 'How it works',
+                    navPrivacy: 'Privacy',
+                    aiBadge: 'Gemini AI',
+                    heroKicker1: 'Editorial AI Translator',
+                    heroKicker2: 'Text & Report Photos',
+                    heroTitle: 'Translating medical jargon into\u00A0plain human language',
+                    heroSubtitle: 'Paste lab results, imaging reports, or upload a photo of a clinic sheet. AI gently explains complex terms, separates what matters from scary phrasing, and prepares questions for your doctor or vet.',
+                    stat1Val: '2 modes', stat1Lbl: 'Humans & pets',
+                    stat2Val: 'Photo + Text', stat2Lbl: 'Multimodal AI',
+                    stat3Val: 'Zero panic', stat3Lbl: 'Calm editorial tone',
+                    modeHuman: 'For Humans',
+                    modeVet: 'Veterinary',
+                    petPrefix: 'Pet:',
+                    pets: { cat: 'Cat', dog: 'Dog', small: 'Rodent / Bird', other: 'Other' },
+                    tonePrefix: 'Tone:',
+                    toneSimple: 'Very simple',
+                    toneDetailed: 'Detailed',
+                    examplesPrefix: '1-click examples:',
+                    inputTitleHuman: 'Original medical text',
+                    inputTitleVet: 'Original veterinary text',
+                    placeholderHuman: 'Paste lab results, MRI/ultrasound notes, or a discharge summary...\n\nOr attach a photo/screenshot of your report below — Gemini AI will read and translate it calmly.',
+                    placeholderVet: 'Paste your pet’s biochemistry panel, ultrasound, urinalysis, or vet notes...\n\nOr upload a photo of the clinic sheet — Gemini AI uses species-specific norms.',
+                    imageHint: 'Image will be analyzed by Gemini AI',
+                    removeImg: 'Remove',
+                    uploadBtn: 'Upload Photo',
+                    clearBtn: 'Clear',
+                    translateBtn: 'Translate with AI',
+                    outputTitle: 'In plain language',
+                    retranslateAi: 'Run live AI',
+                    badgeAi: 'Gemini AI',
+                    badgeRef: 'Sample Case',
+                    badgeOffline: 'Offline Fallback',
+                    fallbackTitle: 'Live AI unavailable — showing offline analysis.',
+                    fallbackDesc: 'Check your connection or add your own Gemini API key in Settings (⚙).',
+                    retryAi: 'Retry AI',
+                    apiKeyBtn: 'API Key',
+                    emptyTitle: 'Your calm explanation will appear here',
+                    emptyDesc: 'Paste medical text on the left, upload a photo of a lab sheet, or click an example above to see it in action.',
+                    loadingHuman: ['Reading clinical terms...', 'Translating into plain English...', 'Removing alarming jargon...', 'Drafting questions for your doctor...'],
+                    loadingVet: ['Reading veterinary terms...', 'Checking species-specific context...', 'Translating into plain English...', 'Drafting questions for your vet...'],
+                    resExpHeading: 'What this means',
+                    resAttHeading: 'Normal or needs attention',
+                    resTermsHeading: 'Key terms explained',
+                    resTermsHint: 'Click any term to view definition',
+                    resQHeadingHuman: 'Questions for your doctor',
+                    resQHeadingVet: 'Questions for your vet',
+                    copyFull: 'Copy full summary',
+                    copyQHuman: 'Copy doctor questions',
+                    copyQVet: 'Copy vet questions',
+                    printBtn: 'Print summary',
+                    printTitle: 'plainly. — Visit Summary',
+                    printSub: 'Prepared with an AI translator for informational use only. Does not replace professional medical or veterinary advice.',
+                    historyLabel: 'Session history:',
+                    clearHistory: 'Clear history',
+                    vetSecKicker: 'Dedicated Section',
+                    vetSecTitle: 'Veterinary care: understanding those who\u00A0cannot speak',
+                    vetJump1: 'Open veterinary translator',
+                    vetJump2: 'Translate pet labs →',
+                    vetNormBadge: 'Good to know',
+                    vetNormTitle: 'Why you shouldn’t Google pet labs using human reference ranges',
+                    vetNormDesc: 'Cats and dogs have distinct physiology: values that look alarming on a human chart are often completely normal for a healthy pet (and vice versa).',
+                    tblCol1: 'Marker', tblCol2: 'Human', tblCol3: 'Cat',
+                    tblR1: 'Temp', tblR2: 'Creatinine', tblR2H: 'up to 106', tblR2C: 'up to 140–160', tblR3: 'Heart rate',
+                    vetGlossHeading: 'Interactive Veterinary Mini-Glossary',
+                    vetGlossSub: 'Click any card to read a calm, owner-friendly explanation',
+                    vetGlossCount: '6 common terms',
+                    vetCheckKicker: 'Owner Checklist',
+                    vetCheckTitle: 'Before the vet visit',
+                    vetChecklist: [
+                        ['Vet passport & past labs', 'trends over time tell the vet much more than a single test.'],
+                        ['Photos of food & meds', 'exact brand names and doses prevent guesswork.'],
+                        ['Short video of symptoms', 'pets often hide coughing or limping at the clinic due to stress.'],
+                        ['Blanket smelling like home', 'place it inside the carrier to keep your pet calmer.']
+                    ],
+                    howKicker: 'How it works',
+                    howTitle: 'Four calm steps from an intimidating sheet to\u00A0a clear plan',
+                    howSteps: [
+                        { num: '01', title: 'Photo or text', desc: 'Paste text from a patient portal or attach a photo of a printed lab or clinic report.' },
+                        { num: '02', title: 'Gemini AI analysis', desc: 'The model adapts to human or species-specific veterinary context without alarmist phrasing.' },
+                        { num: '03', title: 'Interactive glossary', desc: 'Complex medical words are extracted into clickable chips with plain-language definitions.' },
+                        { num: '04', title: 'Ready visit questions', desc: 'Copy tailored questions to your notes or print a clean one-page summary for your appointment.' }
+                    ],
+                    privKicker: 'Honest Approach',
+                    privTitle: 'We don’t replace your doctor or\u00A0vet — we help you speak the\u00A0same language',
+                    privDesc: 'plainly. does not diagnose conditions or prescribe treatments. It reduces anxiety, translates intimidating terminology, and prepares thoughtful questions. For urgent or acute symptoms, always seek in-person care.',
+                    privCardTitle: 'Respectful data handling',
+                    privCardDesc: 'We recommend cropping out personal names or IDs before uploading photos. Your session history stays strictly in your browser’s local storage and clears in one click.',
+                    privBadges: ['No sign-up', 'Local history only', 'Print-ready memo'],
+                    footerNote: 'Portfolio & academic AI project for translating medical and veterinary reports. Informational purposes only.',
+                    modalTitle: 'Gemini API Settings',
+                    modalDesc: 'Inside preview environments the key is provided automatically. If you host this file externally (e.g., GitHub Pages for your admissions portfolio), paste your own Gemini API key here (stored locally in your browser).',
+                    modalLabel: 'Gemini API Key (optional)',
+                    modalClear: 'Clear key',
+                    modalSave: 'Save',
+                    toasts: {
+                        emptyInput: 'Paste text, upload a photo, or choose an example above.',
+                        imgAttached: 'Photo attached — click “Translate with AI”',
+                        imgBadType: 'Please choose an image file (JPG, PNG, or WebP).',
+                        imgTooBig: 'File is too large (10 MB max).',
+                        copiedFull: 'Full summary copied to clipboard',
+                        copiedQ: 'Questions copied to clipboard',
+                        copyFail: 'Could not copy text',
+                        historyLoaded: 'Loaded from history',
+                        historyCleared: 'History cleared',
+                        vetModeOn: 'Switched to Veterinary mode',
+                        keySaved: 'API key saved locally',
+                        keyCleared: 'Custom API key cleared'
+                    },
+                    chars: (n) => `${n} ${n === 1 ? 'char' : 'chars'}`
+                }
+            };
+
+            // ---------------------------------------------------------
+            // 3. BILINGUAL 1-CLICK EXAMPLES (4 HUMAN + 3 VET)
+            // ---------------------------------------------------------
+            const EXAMPLES = {
+                ru: {
+                    human: [
+                        {
+                            id: 'h_cbc',
+                            label: 'Общий анализ крови',
+                            input: `Общий анализ крови + биохимия:\nГемоглобин — 113 г/л (реф. 120–140)\nЭритроциты — 4.1 × 10¹²/л\nЛейкоциты — 6.9 × 10⁹/л, умеренный относительный лимфоцитоз (43%)\nСОЭ по Вестергрену — 19 мм/ч\nФерритин — 8.5 мкг/л (реф. 15–150)\nЗаключение: признаки железодефицитной анемии лёгкой степени.`,
+                            reference: {
+                                title: 'Лёгкий дефицит железа и следы недавней простуды',
+                                statusLevel: 'attention',
+                                statusLabel: 'Есть что обсудить с врачом',
+                                summary: 'Опасных изменений в анализе нет, но запасы железа сейчас истощены — это частая причина усталости и сонливости.',
+                                plainExplanation: 'Основные клетки крови в порядке, однако белок ферритин (он показывает «кладовую» железа) заметно снижен, и вслед за ним чуть опустился гемоглобин. Именно это в бланке назвали лёгкой железодефицитной анемией.\n\nНебольшой лимфоцитоз и слегка повышенная СОЭ обычно остаются как спокойный «хвост» после недавно перенесённого вируса или простуды.',
+                                attentionPoints: [
+                                    'Ферритин 8.5 мкг/л — главный показатель, на который стоит обратить внимание терапевта.',
+                                    'Общий уровень лейкоцитов в норме — острого бактериального воспаления сейчас не видно.',
+                                    'Ситуация корректируется планово и не требует срочной паники.'
+                                ],
+                                terms: [
+                                    { term: 'Ферритин', meaning: 'Белок-хранилище, показывающий реальный запас железа в организме.' },
+                                    { term: 'Гемоглобин', meaning: 'Белок в эритроцитах, переносящий кислород к органам и тканям.' },
+                                    { term: 'Лимфоцитоз', meaning: 'Небольшое повышение лимфоцитов, чаще всего после вирусной нагрузки.' },
+                                    { term: 'СОЭ', meaning: 'Неспецифический маркер, который может временно расти после простуды.' }
+                                ],
+                                questionsForDoctor: [
+                                    'Какой препарат железа, в какой дозировке и как долго мне лучше принимать?',
+                                    'Нужно ли дополнительно проверить витамин B12 и фолиевую кислоту?',
+                                    'Через сколько недель стоит пересдать ферритин для контроля?'
+                                ]
+                            }
+                        },
+                        {
+                            id: 'h_mri',
+                            label: 'МРТ поясницы',
+                            input: `МРТ пояснично-крестцового отдела позвоночника:\nФизиологический поясничный лордоз сглажен. Определяются дегенеративно-дистрофические изменения межпозвонковых дисков (проявления остеохондроза). В сегменте L4–L5 — дорзальная протрузия диска до 3.1 мм без признаков компрессии нервных корешков и выраженного стеноза позвоночного канала.`,
+                            reference: {
+                                title: 'Обычные возрастные изменения и небольшая протрузия',
+                                statusLevel: 'calm',
+                                statusLabel: 'Выглядит спокойно',
+                                summary: 'На снимке нет ничего критичного: небольшое выпячивание диска не задевает нервы и не требует операции.',
+                                plainExplanation: 'Пугающая фраза «дегенеративно-дистрофические изменения» означает естественный износ дисков, который встречается у большинства взрослых.\n\nВ сегменте L4–L5 есть небольшая протрузия 3.1 мм, но самое важное — она не сдавливает нервные корешки и не сужает позвоночный канал. Сглаженный лордоз часто связан с мышечным спазмом.',
+                                attentionPoints: [
+                                    'Компрессии нервов и стеноза канала нет — это самый благоприятный момент в описании.',
+                                    'Такие изменения обычно хорошо отвечают на регулярную мягкую ЛФК.',
+                                    'Снимок всегда оценивают вместе с реальными симптомами, а не отдельно.'
+                                ],
+                                terms: [
+                                    { term: 'Протрузия', meaning: 'Небольшое выпячивание межпозвонкового диска без разрыва его оболочки.' },
+                                    { term: 'Лордоз', meaning: 'Естественный изгиб позвоночника вперёд; его сглаженность часто даёт спазм мышц.' },
+                                    { term: 'Стеноз', meaning: 'Сужение позвоночного канала. В вашем заключении его нет.' },
+                                    { term: 'Остеохондроз', meaning: 'Собирательное название естественных возрастных изменений дисков.' }
+                                ],
+                                questionsForDoctor: [
+                                    'Связаны ли мои ощущения в спине с протрузией или причина скорее в мышцах?',
+                                    'Какие упражнения ЛФК мне сейчас подойдут и каких движений избегать?',
+                                    'Нужна ли консультация врача ЛФК или физиотерапевта?'
+                                ]
+                            }
+                        },
+                        {
+                            id: 'h_gastritis',
+                            label: 'Хронический гастрит (ФГДС)',
+                            input: `Протокол ЭГДС (ФГДС):\nПищевод свободно проходим, кардия смыкается не полностью. В желудке умеренное количество слизи с примесью желчи (дуодено-гастральный рефлюкс). Слизистая антрального отдела умеренно гиперемирована (очаговая эритема), без эрозий и язвенных дефектов. Заключение: поверхностный хронический гастрит. Взята биопсия на H. pylori.`,
+                            reference: {
+                                title: 'Поверхностный гастрит и небольшой заброс желчи',
+                                statusLevel: 'attention',
+                                statusLabel: 'Есть что обсудить с врачом',
+                                summary: 'Язв и эрозий в желудке не нашли — есть только лёгкое покраснение слизистой и небольшой рефлюкс.',
+                                plainExplanation: 'Пищевод в порядке, а в нижней части желудка слизистая немного покраснела (гиперемия / эритема). Хорошая новость: глубоких повреждений — эрозий и язв — нет.\n\nТакже отмечен заброс небольшого количества желчи в желудок (рефлюкс) и неполное смыкание клапана между пищеводом и желудком.',
+                                attentionPoints: [
+                                    'Дождитесь результата биопсии на Helicobacter pylori — от него зависит тактика лечения.',
+                                    'Эрозий и язв нет — слизистая в целом сохранна.',
+                                    'Гастроэнтеролог подберёт мягкую схему поддержки слизистой и режима питания.'
+                                ],
+                                terms: [
+                                    { term: 'Эритема / гиперемия', meaning: 'Покраснение слизистой оболочки из-за раздражения.' },
+                                    { term: 'Рефлюкс', meaning: 'Обратный заброс содержимого (кислоты или желчи).' },
+                                    { term: 'Кардия', meaning: 'Мышечный клапан на границе между пищеводом и желудком.' },
+                                    { term: 'H. pylori', meaning: 'Бактерия, часто вызывающая воспаление слизистой желудка.' }
+                                ],
+                                questionsForDoctor: [
+                                    'Если тест на H. pylori окажется положительным, какая схема лечения потребуется?',
+                                    'Нужны ли препараты, уменьшающие заброс желчи?',
+                                    'Какие привычки в питании помогут при неполном смыкании кардии?'
+                                ]
+                            }
+                        },
+                        {
+                            id: 'h_thyroid',
+                            label: 'УЗИ щитовидной железы',
+                            input: `УЗИ щитовидной железы:\nОбщий объём железы — 13.2 см³ (норма). Контуры ровные, чёткие. Эхогенность паренхимы средняя, структура с незначительными диффузными изменениями. В правой доле визуализируется одиночная коллоидная киста диаметром 4 мм (EU-TIRADS 2). Регионарные лимфоузлы не увеличены.`,
+                            reference: {
+                                title: 'Спокойное УЗИ и крошечная доброкачественная киста',
+                                statusLevel: 'calm',
+                                statusLabel: 'Выглядит спокойно',
+                                summary: 'Щитовидная железа нормального размера, а найденная киста 4 мм относится к доброкачественным находкам.',
+                                plainExplanation: 'Размеры и контуры щитовидной железы в пределах нормы, лимфоузлы спокойные. Незначительные диффузные изменения ткани встречаются у многих здоровых людей.\n\nОдиночная коллоидная киста 4 мм оценена как EU-TIRADS 2 — это доброкачественная находка, которая не требует пункции или операции.',
+                                attentionPoints: [
+                                    'Категория EU-TIRADS 2 подтверждает доброкачественный характер кисты.',
+                                    'УЗИ показывает структуру, а для оценки гормонов врачи обычно смотрят кровь на ТТГ.',
+                                    'Такие мелкие кисты обычно просто наблюдают планово раз в 1–2 года.'
+                                ],
+                                terms: [
+                                    { term: 'Паренхима', meaning: 'Основная рабочая ткань щитовидной железы.' },
+                                    { term: 'Коллоидная киста', meaning: 'Небольшой доброкачественный пузырёк с жидкостью.' },
+                                    { term: 'EU-TIRADS 2', meaning: 'Оценка по международной шкале: доброкачественная находка.' },
+                                    { term: 'Эхогенность', meaning: 'То, насколько плотно ткань отражает ультразвук на экране.' }
+                                ],
+                                questionsForDoctor: [
+                                    'Нужно ли сдать кровь на ТТГ, чтобы проверить гормональную работу железы?',
+                                    'Как часто стоит повторять УЗИ для планового наблюдения?',
+                                    'Нужна ли профилактика йодом с учётом моего рациона?'
+                                ]
+                            }
+                        }
+                    ],
+                    vet: [
+                        {
+                            id: 'v_cat_ckd',
+                            label: 'Биохимия кота (ХБП / креатинин)',
+                            pet: 'cat',
+                            input: `Биохимический анализ крови (кот, 9 лет, 4.6 кг):\nКреатинин — 198 мкмоль/л (норма до 160)\nМочевина — 14.2 ммоль/л (норма до 12.1)\nФосфор — 1.65 ммоль/л\nАЛТ — 48 Ед/л (норма), Общий белок — 72 г/л\nПодозрение на начальную стадию ХБП. Рекомендована оценка плотности мочи и СБК.`,
+                            reference: {
+                                title: 'Умеренное повышение почечных показателей у кота',
+                                statusLevel: 'attention',
+                                statusLabel: 'Есть что обсудить с ветеринаром',
+                                summary: 'Печень в порядке, но креатинин и мочевина немного выше кошачьей нормы — нужно спокойно проверить работу почек.',
+                                plainExplanation: 'У кошек старше 7–8 лет почки становятся уязвимым местом. Повышение креатинина (198) и мочевины (14.2) может говорить либо о начальной стадии хронической болезни почек (ХБП), либо о временном обезвоживании.\n\nПоказатели печени (АЛТ) и белка в норме — это хорошая новость. Чтобы понять реальную картину, ветеринары всегда смотрят биохимию вместе с анализом мочи.',
+                                attentionPoints: [
+                                    'Креатинин и мочевина повышены умеренно — ситуация управляемая, без повода для паники.',
+                                    'Сдайте общий анализ мочи (плотность) и тест СБК — они уточнят работу почек.',
+                                    'Следите, чтобы у кота всегда был доступ к свежей воде.'
+                                ],
+                                terms: [
+                                    { term: 'ХБП', meaning: 'Хроническая болезнь почек — частая возрастная особенность кошек, успешно контролируемая диетой.' },
+                                    { term: 'Креатинин', meaning: 'Продукт обмена мышц, выводимый почками; главный маркер нагрузки на почки.' },
+                                    { term: 'Мочевина', meaning: 'Показатель белкового обмена; растёт при снижении работы почек или обезвоживании.' },
+                                    { term: 'СБК', meaning: 'Соотношение белок/креатинин в моче — точный тест на потерю белка почками.' }
+                                ],
+                                questionsForDoctor: [
+                                    'Нужно ли сейчас сдать общий анализ мочи, СБК и измерить коту давление?',
+                                    'Пора ли переходить на специализированную почечную диету (Renal)?',
+                                    'Через сколько недель пересдать креатинин для проверки динамики?'
+                                ]
+                            }
+                        },
+                        {
+                            id: 'v_dog_liver',
+                            label: 'Кровь и печень собаки',
+                            pet: 'dog',
+                            input: `Биохимия крови (собака, 6 лет, 18 кг):\nАЛТ — 118 Ед/л (норма до 75)\nЩелочная фосфатаза (ЩФ) — 165 Ед/л (норма до 130)\nОбщий билирубин — 4.1 мкмоль/л (норма)\nАльбумин — 34 г/л (норма), Глюкоза — 5.2 ммоль/л\nРекомендовано УЗИ печени и желчного пузыря.`,
+                            reference: {
+                                title: 'Умеренный рост печёночных ферментов у собаки',
+                                statusLevel: 'attention',
+                                statusLabel: 'Есть что обсудить с ветеринаром',
+                                summary: 'Печень справляется со своими основными функциями (билирубин и альбумин в норме), но ферменты АЛТ и ЩФ слегка повышены.',
+                                plainExplanation: 'Повышение АЛТ и щелочной фосфатазы (ЩФ) говорит о том, что клетки печени или желчные протоки сейчас испытывают повышенную нагрузку — у собак это часто бывает из-за жирной еды, застоя желчи или приёма лекарств.\n\nОчень обнадёживающий признак: билирубин и альбумин полностью в норме. Это значит, что сама функция печени сохранена.',
+                                attentionPoints: [
+                                    'Превышение ферментов умеренное (менее чем в 2 раза) — это не острая печёночная недостаточность.',
+                                    'УЗИ брюшной полости поможет увидеть структуру печени и исключить застой желчи (сладж).',
+                                    'Не давайте собаке человеческие гепатопротекторы без назначения ветеринара.'
+                                ],
+                                terms: [
+                                    { term: 'АЛТ', meaning: 'Фермент внутри клеток печени; повышается при их раздражении.' },
+                                    { term: 'Щелочная фосфатаза', meaning: 'Фермент, часто реагирующий на застой желчи или гормональные факторы у собак.' },
+                                    { term: 'Билирубин', meaning: 'Пигмент желчи; его нормальный уровень — хороший знак.' },
+                                    { term: 'Альбумин', meaning: 'Главный белок, который производит печень; норма говорит о сохранной работе органа.' }
+                                ],
+                                questionsForDoctor: [
+                                    'Нужно ли делать УЗИ печени и желчного пузыря натощак?',
+                                    'Могли ли недавние лакомства, корм или лекарства вызвать такой рост АЛТ и ЩФ?',
+                                    'Требуется ли сейчас диета с пониженным содержанием жира и контрольная сдача крови?'
+                                ]
+                            }
+                        },
+                        {
+                            id: 'v_cat_urine',
+                            label: 'Анализ мочи кота (МКБ / идиопатический цистит)',
+                            pet: 'cat',
+                            input: `Общий анализ мочи (кот, 4 года):\nПлотность — 1.052, pH — 7.5 (щелочная)\nБелок — следы, Глюкоза — отр.\nМикроскопия осадка: эритроциты 8–12 в п/зр, лейкоциты 2–3 в п/зр, кристаллы струвиты ++. Бактерии не обнаружены. Признаки кристаллурии (МКБ / урологический синдром кошек).`,
+                            reference: {
+                                title: 'Кристаллы струвиты и раздражение мочевого пузыря',
+                                statusLevel: 'attention',
+                                statusLabel: 'Есть что обсудить с ветеринаром',
+                                summary: 'Бактериальной инфекции не нашли, но моча слишком концентрированная и в ней появились кристаллы струвиты, царапающие стенку мочевого пузыря.',
+                                plainExplanation: 'Высокая плотность (1.052) означает, что кот пьёт маловато воды. В такой концентрированной и щелочной моче (pH 7.5) легко выпадают кристаллы — струвиты. Они раздражают слизистую мочевого пузыря, из-за чего в анализе появились эритроциты.\n\nХорошая новость: бактерий не обнаружили, а струвиты — самый «управляемый» вид кристаллов, который обычно хорошо растворяется специальной диетой и увеличением питья.',
+                                attentionPoints: [
+                                    'Главное лекарство для кошек с МКБ — больше воды (влажный корм, питьевой фонтанчик).',
+                                    'Следите, чтобы кот мог свободно писать: если он долго сидит в лотке без результата — это срочный повод ехать в клинику.',
+                                    'Ветеринар подберёт лечебный корм для мягкого подкисления мочи и растворения струвитов.'
+                                ],
+                                terms: [
+                                    { term: 'Струвиты', meaning: 'Кристаллы в щелочной моче, которые обычно можно растворить диетой.' },
+                                    { term: 'Кристаллурия', meaning: 'Наличие микроскопических кристаллов солей в осадке мочи.' },
+                                    { term: 'Плотность мочи', meaning: 'Показывает концентрацию мочи; слишком высокая говорит о нехватке воды.' },
+                                    { term: 'МКБ', meaning: 'Мочекаменная болезнь / урологический синдром кошек.' }
+                                ],
+                                questionsForDoctor: [
+                                    'Нужно ли сделать УЗИ мочевого пузыря, чтобы убедиться, что там только песок, а не крупные камни?',
+                                    'Какую лечебную диету (Urinary) и на какой срок вы рекомендуете?',
+                                    'Нужны ли спазмолитики или обезболивание, чтобы снять дискомфорт при мочеиспускании?'
+                                ]
+                            }
+                        }
+                    ]
+                },
+                en: {
+                    human: [
+                        {
+                            id: 'h_cbc',
+                            label: 'Complete Blood Count (CBC)',
+                            input: `Complete Blood Count + Iron Studies:\nHemoglobin — 11.3 g/dL (ref. 12.0–15.5)\nRBC — 4.1 × 10⁶/µL\nWBC — 6.9 × 10³/µL, mild relative lymphocytosis (43%)\nESR — 19 mm/hr\nFerritin — 8.5 ng/mL (ref. 15–150)\nImpression: Mild iron-deficiency anemia.`,
+                            reference: {
+                                title: 'Mild iron deficiency and signs of a recent mild virus',
+                                statusLevel: 'attention',
+                                statusLabel: 'Worth discussing with your doctor',
+                                summary: 'There is nothing alarming here, but your body’s iron reserves are running low — a very common, treatable cause of fatigue.',
+                                plainExplanation: 'Your main blood cells look stable, but ferritin (the protein that stores iron) is noticeably low, pulling hemoglobin slightly below range. That combination is what the report calls mild iron-deficiency anemia.\n\nThe slight relative lymphocytosis and mildly elevated ESR are commonly seen as a harmless after-effect of a recent cold or viral bug.',
+                                attentionPoints: [
+                                    'Ferritin at 8.5 ng/mL is the key number to review with your primary care doctor.',
+                                    'Total white blood cells are normal, so there is no sign of an acute bacterial infection.',
+                                    'Iron deficiency is routinely managed with targeted supplementation and follow-up labs.'
+                                ],
+                                terms: [
+                                    { term: 'Ferritin', meaning: 'Your body’s iron-storage protein — the best indicator of true iron reserves.' },
+                                    { term: 'Hemoglobin', meaning: 'The oxygen-carrying protein inside red blood cells.' },
+                                    { term: 'Lymphocytosis', meaning: 'A mild rise in lymphocytes, often lingering after a minor viral illness.' },
+                                    { term: 'ESR', meaning: 'A general, non-specific marker that can rise temporarily after mild inflammation.' }
+                                ],
+                                questionsForDoctor: [
+                                    'Which form and dose of iron supplement would be easiest on my stomach?',
+                                    'Should we also check vitamin B12, folate, or look into why my iron dropped?',
+                                    'In how many weeks should I recheck ferritin and hemoglobin?'
+                                ]
+                            }
+                        },
+                        {
+                            id: 'h_mri',
+                            label: 'Lumbar Spine MRI',
+                            input: `MRI Lumbar Spine without contrast:\nStraightening of the normal lumbar lordosis. Mild degenerative disc disease throughout the lumbar spine. At L4–L5, there is a 3.1 mm posterior disc protrusion without significant spinal canal stenosis or nerve root compression.`,
+                            reference: {
+                                title: 'Routine wear-and-tear and a small disc bulge',
+                                statusLevel: 'calm',
+                                statusLabel: 'Looks reassuring',
+                                summary: 'Despite intimidating wording, the scan is reassuring: the small disc protrusion is not pinching any nerves.',
+                                plainExplanation: '“Degenerative disc disease” sounds scary, but in radiology it simply describes normal, age-related wear and tear seen in most adults — even people with zero back pain.\n\nAt L4–L5 there is a small 3.1 mm protrusion, and the most important takeaway is that it does not compress nerve roots or narrow the spinal canal. Straightened lordosis often just reflects tight back muscles.',
+                                attentionPoints: [
+                                    'No nerve root compression and no significant stenosis — this is the best possible news on a spine MRI.',
+                                    'Findings like this typically respond well to gentle physical therapy and core strengthening.',
+                                    'MRI findings should always be interpreted alongside how you actually feel.'
+                                ],
+                                terms: [
+                                    { term: 'Disc protrusion', meaning: 'A small outward bulge of a spinal disc without a full tear.' },
+                                    { term: 'Lordosis', meaning: 'The natural inward curve of the lower back; flattening is often due to muscle tension.' },
+                                    { term: 'Stenosis', meaning: 'Narrowing of the spinal canal — explicitly absent in your report.' },
+                                    { term: 'Degenerative disc disease', meaning: 'Radiology phrasing for normal, gradual aging of spinal discs.' }
+                                ],
+                                questionsForDoctor: [
+                                    'Are my symptoms likely coming from this small bulge or mostly from muscular strain?',
+                                    'Would a referral to physical therapy help stabilize my lower back?',
+                                    'Are there any specific movements I should modify while things calm down?'
+                                ]
+                            }
+                        },
+                        {
+                            id: 'h_gastritis',
+                            label: 'Chronic Gastritis (Endoscopy)',
+                            input: `Upper GI Endoscopy (EGD):\nEsophagus normal; mild laxity of the lower esophageal sphincter. Stomach contains small amount of bile-tinged fluid (duodenogastric reflux). Antral mucosa shows mild patchy erythema without erosions or ulcers. Impression: Mild chronic superficial gastritis. Biopsies obtained for H. pylori.`,
+                            reference: {
+                                title: 'Mild surface stomach irritation and slight reflux',
+                                statusLevel: 'attention',
+                                statusLabel: 'Worth discussing with your doctor',
+                                summary: 'No ulcers or deep damage were found — just mild redness of the stomach lining and a bit of reflux.',
+                                plainExplanation: 'Your esophagus looks healthy, and the lower stomach lining shows mild redness (“erythema”), which doctors classify as superficial gastritis. Reassuringly, there are no erosions or ulcers.\n\nA small amount of bile reflux and slight relaxation of the valve above the stomach were noted, which can contribute to heartburn or mild nausea.',
+                                attentionPoints: [
+                                    'Wait for the H. pylori biopsy result — it determines whether antibiotics are needed.',
+                                    'Absence of ulcers or erosions means the stomach lining is intact.',
+                                    'A gastroenterologist can recommend gentle acid/mucosal protection and meal timing tips.'
+                                ],
+                                terms: [
+                                    { term: 'Erythema', meaning: 'Simple surface redness of the lining caused by mild irritation.' },
+                                    { term: 'Duodenogastric reflux', meaning: 'Small backward flow of digestive bile into the stomach.' },
+                                    { term: 'Antral mucosa', meaning: 'The inner lining of the lower section of the stomach.' },
+                                    { term: 'H. pylori', meaning: 'A common stomach bacterium easily checked via biopsy.' }
+                                ],
+                                questionsForDoctor: [
+                                    'If the H. pylori biopsy is positive, what treatment course do you recommend?',
+                                    'Do I need short-term medication to soothe the lining or reduce reflux?',
+                                    'Which dietary habits make the biggest difference for bile reflux?'
+                                ]
+                            }
+                        },
+                        {
+                            id: 'h_thyroid',
+                            label: 'Thyroid Ultrasound',
+                            input: `Thyroid Ultrasound:\nTotal thyroid volume: 13.2 mL (within normal limits). Smooth contours, homogeneous parenchyma with minimal diffuse heterogeneity. Right lobe shows a solitary 4 mm colloid cyst (TI-RADS 2). No cervical lymphadenopathy.`,
+                            reference: {
+                                title: 'Normal thyroid scan with a tiny benign cyst',
+                                statusLevel: 'calm',
+                                statusLabel: 'Looks reassuring',
+                                summary: 'Your thyroid is normal in size, and the tiny 4 mm cyst is classified as benign.',
+                                plainExplanation: 'The overall size, shape, and surrounding lymph nodes all look healthy. Minimal diffuse changes in tissue texture are very common and rarely cause concern on their own.\n\nThe solitary 4 mm colloid cyst is scored TI-RADS 2, meaning it is a benign fluid-filled spot that does not require biopsy or surgery.',
+                                attentionPoints: [
+                                    'TI-RADS 2 confirms a benign classification with negligible risk.',
+                                    'Ultrasound shows structure only — a simple TSH blood test checks hormone function.',
+                                    'Small benign cysts are typically monitored routinely every 1–2 years if needed.'
+                                ],
+                                terms: [
+                                    { term: 'Parenchyma', meaning: 'The main functional tissue of the thyroid gland.' },
+                                    { term: 'Colloid cyst', meaning: 'A tiny, benign, fluid-filled pocket inside the thyroid.' },
+                                    { term: 'TI-RADS 2', meaning: 'Standardized ultrasound score indicating a benign finding.' },
+                                    { term: 'Lymphadenopathy', meaning: 'Enlarged lymph nodes — explicitly not present here.' }
+                                ],
+                                questionsForDoctor: [
+                                    'Should we pair this scan with a routine TSH blood test?',
+                                    'Do I need a follow-up ultrasound in a year or two, or is no further imaging needed?',
+                                    'Is there anything in my diet or iodine intake I should adjust?'
+                                ]
+                            }
+                        }
+                    ],
+                    vet: [
+                        {
+                            id: 'v_cat_ckd',
+                            label: 'Cat Biochemistry (CKD / Creatinine)',
+                            pet: 'cat',
+                            input: `Feline Biochemistry Panel (Cat, 9 yrs, 4.6 kg):\nCreatinine — 198 µmol/L (ref. up to 160)\nBUN / Urea — 14.2 mmol/L (ref. up to 12.1)\nPhosphorus — 1.65 mmol/L\nALT — 48 U/L (normal), Total Protein — 72 g/L\nSuspected early CKD (IRIS Stage 2). Recommend urinalysis (USG) and UPC ratio.`,
+                            reference: {
+                                title: 'Mildly elevated kidney values in a senior cat',
+                                statusLevel: 'attention',
+                                statusLabel: 'Worth discussing with your vet',
+                                summary: 'Liver markers look great, while creatinine and urea are mildly above feline reference limits — worth a calm kidney checkup.',
+                                plainExplanation: 'In cats over 7–8 years old, kidneys naturally become more sensitive. Mildly elevated creatinine (198) and urea (14.2) can point to early chronic kidney disease (CKD) or simply mild dehydration before the blood draw.\n\nReassuringly, liver enzymes (ALT) and total protein are normal. Vets always pair bloodwork with a urine test before confirming CKD.',
+                                attentionPoints: [
+                                    'These elevations are mild and very manageable — early detection is actually great news.',
+                                    'A urinalysis (specific gravity) and UPC ratio will show how well the kidneys concentrate urine.',
+                                    'Encourage hydration with fresh water bowls, fountains, or wet food.'
+                                ],
+                                terms: [
+                                    { term: 'CKD', meaning: 'Chronic Kidney Disease — very common in older cats and often well managed with diet and hydration.' },
+                                    { term: 'Creatinine', meaning: 'A muscle-metabolism byproduct filtered by the kidneys; key kidney marker.' },
+                                    { term: 'BUN / Urea', meaning: 'Protein breakdown marker that rises with reduced kidney filtration or dehydration.' },
+                                    { term: 'UPC Ratio', meaning: 'Urine Protein-to-Creatinine test that checks if the kidneys are leaking protein.' }
+                                ],
+                                questionsForDoctor: [
+                                    'Should we run a urinalysis, UPC ratio, and blood pressure check next?',
+                                    'Is it time to transition to a prescription renal diet, or should we recheck after hydration?',
+                                    'When should we repeat bloodwork to track the trend?'
+                                ]
+                            }
+                        },
+                        {
+                            id: 'v_dog_liver',
+                            label: 'Dog Blood & Liver Panel',
+                            pet: 'dog',
+                            input: `Canine Biochemistry Panel (Dog, 6 yrs, 18 kg):\nALT — 118 U/L (ref. up to 75)\nALP (Alkaline Phosphatase) — 165 U/L (ref. up to 130)\nTotal Bilirubin — 4.1 µmol/L (normal)\nAlbumin — 34 g/L (normal), Glucose — 5.2 mmol/L\nRecommend abdominal ultrasound to evaluate liver and gallbladder.`,
+                            reference: {
+                                title: 'Mildly elevated liver enzymes in your dog',
+                                statusLevel: 'attention',
+                                statusLabel: 'Worth discussing with your vet',
+                                summary: 'Core liver functions (bilirubin and albumin) are completely normal, though ALT and ALP are mildly above range.',
+                                plainExplanation: 'Mild increases in ALT and ALP suggest the liver cells or bile ducts are experiencing temporary irritation or extra workload — commonly triggered in dogs by fatty treats, mild gallbladder sludge, or recent medications.\n\nMost importantly, bilirubin and albumin are normal, showing the liver is still doing its job properly.',
+                                attentionPoints: [
+                                    'Enzyme elevations under 2× the upper limit are considered mild, not acute liver failure.',
+                                    'A fasted abdominal ultrasound is a gentle next step to inspect the liver and gallbladder.',
+                                    'Avoid giving over-the-counter human supplements without your vet’s guidance.'
+                                ],
+                                terms: [
+                                    { term: 'ALT', meaning: 'An enzyme inside liver cells that rises when cells are mildly irritated.' },
+                                    { term: 'ALP', meaning: 'An enzyme often linked to bile flow, bone activity, or stress hormones in dogs.' },
+                                    { term: 'Bilirubin', meaning: 'A bile pigment; normal levels are a reassuring sign.' },
+                                    { term: 'Albumin', meaning: 'An essential protein made by the liver; normal levels confirm solid liver function.' }
+                                ],
+                                questionsForDoctor: [
+                                    'Does my dog need to fast before the abdominal ultrasound?',
+                                    'Could recent treats, diet changes, or medications explain this mild ALT/ALP bump?',
+                                    'Should we switch to a lower-fat diet and recheck values in 4–6 weeks?'
+                                ]
+                            }
+                        },
+                        {
+                            id: 'v_cat_urine',
+                            label: 'Cat Urinalysis (FLUTD / Struvites)',
+                            pet: 'cat',
+                            input: `Feline Urinalysis (Cat, 4 yrs):\nSpecific Gravity (USG) — 1.052, pH — 7.5 (alkaline)\nProtein — trace, Glucose — negative\nSediment: RBC 8–12/hpf, WBC 2–3/hpf, Struvite crystals ++. No bacteria seen. Findings consistent with crystalluria / FLUTD.`,
+                            reference: {
+                                title: 'Struvite crystals and mild bladder irritation',
+                                statusLevel: 'attention',
+                                statusLabel: 'Worth discussing with your vet',
+                                summary: 'No bacterial infection was found, but concentrated alkaline urine allowed struvite crystals to form and irritate the bladder.',
+                                plainExplanation: 'A high specific gravity (1.052) means the urine is quite concentrated, usually because cats naturally drink less water. In concentrated, alkaline urine (pH 7.5), struvite crystals can form and mildly scratch the bladder lining, explaining the red blood cells.\n\nThe good news: no bacteria were seen, and struvite crystals are the easiest type to dissolve with hydration and targeted nutrition.',
+                                attentionPoints: [
+                                    'Increasing water intake (wet food, water fountain) is the #1 long-term support for FLUTD.',
+                                    'Watch litter-box habits closely: straining without producing urine is an urgent vet emergency.',
+                                    'Your vet can recommend a urinary diet designed to gently dissolve struvite crystals.'
+                                ],
+                                terms: [
+                                    { term: 'Struvite crystals', meaning: 'Mineral crystals that form in alkaline urine and usually dissolve with dietary support.' },
+                                    { term: 'FLUTD', meaning: 'Feline Lower Urinary Tract Disease — umbrella term for bladder irritation or crystals in cats.' },
+                                    { term: 'Specific Gravity (USG)', meaning: 'Measures how concentrated the urine is; very high values mean more hydration helps.' },
+                                    { term: 'Crystalluria', meaning: 'Presence of microscopic mineral crystals in urine sediment.' }
+                                ],
+                                questionsForDoctor: [
+                                    'Should we do a quick bladder ultrasound to rule out larger stones?',
+                                    'Which urinary diet do you recommend, and for how long?',
+                                    'Would short-term anti-inflammatory or comfort medication help my cat feel better?'
+                                ]
+                            }
+                        }
+                    ]
+                }
+            };
+
+            // ---------------------------------------------------------
+            // 4. BILINGUAL VETERINARY MINI-GLOSSARY (6 TERMS)
+            // ---------------------------------------------------------
+            const VET_GLOSSARY = {
+                ckd: {
+                    ru: { code: 'ХБП', sub: 'Болезнь почек', title: 'ХБП — хроническая болезнь почек', desc: 'Постепенное снижение работы почек, часто встречающееся у кошек старше 7–8 лет. Это не приговор: при раннем выявлении, диете и контроле воды питомцы живут долгой и комфортной жизнью.' },
+                    en: { code: 'CKD', sub: 'Kidney health', title: 'CKD — Chronic Kidney Disease', desc: 'A gradual decline in kidney filtration common in cats over 7–8 years old. With early detection, hydration, and tailored nutrition, many pets enjoy years of comfortable life.' }
+                },
+                lipidosis: {
+                    ru: { code: 'Липидоз', sub: 'Печень у кошек', title: 'Липидоз печени (жировая дистрофия)', desc: 'Состояние у кошек, когда при отказе от еды на 2–3 дня организм экстренно перерабатывает жир и он накапливается в печени. Поэтому длительная голодовка для кошек опасна.' },
+                    en: { code: 'Lipidosis', sub: 'Feline liver', title: 'Hepatic Lipidosis (Fatty Liver)', desc: 'A serious feline condition triggered when a cat stops eating for 2–3+ days, causing fat to rapidly accumulate in the liver. Always consult a vet if a cat refuses food.' }
+                },
+                flutd: {
+                    ru: { code: 'МКБ', sub: 'Мочевой пузырь', title: 'МКБ — мочекаменная болезнь', desc: 'Образование кристаллов или камней в мочевом пузыре. Главные сигналы: питомец часто ходит в лоток по чуть-чуть или испытывает дискомфорт при мочеиспускании.' },
+                    en: { code: 'FLUTD', sub: 'Bladder & urine', title: 'FLUTD — Feline Lower Urinary Tract Disease', desc: 'Irritation, crystals, or stones affecting the bladder. Watch for frequent small trips to the litter box, vocalizing, or straining — inability to urinate is an emergency.' }
+                },
+                eosin: {
+                    ru: { code: 'Эозинофилия', sub: 'Анализ крови', title: 'Эозинофилия в анализе крови', desc: 'Повышение особого вида лейкоцитов (эозинофилов). У домашних животных две самые частые причины — аллергическая реакция (на корм или укусы блох) либо паразиты.' },
+                    en: { code: 'Eosinophilia', sub: 'Blood count', title: 'Eosinophilia on Bloodwork', desc: 'An elevation in a specific type of white blood cell (eosinophils). In cats and dogs, the two most common causes are allergies (food or flea) and parasites.' }
+                },
+                creat: {
+                    ru: { code: 'Креатинин', sub: 'Биохимия кошек', title: 'Креатинин у кошек', desc: 'Главный почечный маркер в биохимии. У кошек верхняя граница нормы заметно выше человеческой (обычно до 140–160 мкмоль/л), а у крупных мускулистых котов бывает ещё чуть выше.' },
+                    en: { code: 'Creatinine', sub: 'Feline biochem', title: 'Creatinine in Cats', desc: 'The primary kidney filtration marker. Healthy feline upper limits (often up to 140–160 µmol/L) are higher than human limits — never compare them to human charts.' }
+                },
+                azotemia: {
+                    ru: { code: 'Азотемия', sub: 'Почки / вода', title: 'Азотемия', desc: 'Повышение уровня продуктов азотистого обмена (креатинина и мочевины) в крови. Бывает не только при болезнях почек, но и временно — при обычном обезвоживании.' },
+                    en: { code: 'Azotemia', sub: 'Kidneys / fluid', title: 'Azotemia', desc: 'Elevated nitrogen waste products (BUN/urea and creatinine) in the bloodstream. It can stem from kidney changes, but also temporarily from simple dehydration.' }
+                }
+            };
+
+            // ---------------------------------------------------------
+            // 5. OFFLINE SMART BILINGUAL FALLBACK ANALYZER
+            // ---------------------------------------------------------
+            const OFFLINE_TERMS = [
+                { keys: ['ферритин', 'ferritin'], ru: ['Ферритин', 'Белок-хранилище, показывающий реальный запас железа в организме.'], en: ['Ferritin', 'Iron-storage protein showing true iron reserves.'] },
+                { keys: ['гемоглобин', 'hemoglobin', 'hgb'], ru: ['Гемоглобин', 'Белок в эритроцитах, переносящий кислород к органам.'], en: ['Hemoglobin', 'Oxygen-carrying protein inside red blood cells.'] },
+                { keys: ['лимфоцитоз', 'lymphocytosis'], ru: ['Лимфоцитоз', 'Повышение лимфоцитов, часто остающееся после вирусной нагрузки.'], en: ['Lymphocytosis', 'Elevated lymphocytes, commonly seen after mild viral infections.'] },
+                { keys: ['соэ', 'esr'], ru: ['СОЭ', 'Неспецифический показатель, временно реагирующий на простуду или воспаление.'], en: ['ESR', 'Non-specific inflammation marker that rises temporarily with minor illness.'] },
+                { keys: ['протрузия', 'protrusion'], ru: ['Протрузия', 'Небольшое выпячивание межпозвонкового диска без разрыва оболочки.'], en: ['Protrusion', 'Small outward bulge of a spinal disc without a full tear.'] },
+                { keys: ['лордоз', 'lordosis'], ru: ['Лордоз', 'Естественный изгиб позвоночника; его сглаженность часто связана со спазмом мышц.'], en: ['Lordosis', 'Natural spinal curve; straightening often reflects muscle tension.'] },
+                { keys: ['стеноз', 'stenosis'], ru: ['Стеноз', 'Сужение канала или просвета. Важно смотреть, указано ли «без стеноза».'], en: ['Stenosis', 'Narrowing of a canal or passage; check whether the report says "without stenosis".'] },
+                { keys: ['киста', 'cyst'], ru: ['Киста', 'Небольшой пузырёк с жидкостью; мелкие коллоидные кисты часто доброкачественны.'], en: ['Cyst', 'A small fluid-filled sac; small colloid cysts are commonly benign.'] },
+                { keys: ['рефлюкс', 'reflux'], ru: ['Рефлюкс', 'Обратный заброс желудочного сока или желчи.'], en: ['Reflux', 'Backward flow of stomach acid or bile.'] },
+                { keys: ['эритема', 'гипереми', 'erythema'], ru: ['Эритема / гиперемия', 'Покраснение слизистой оболочки из-за раздражения.'], en: ['Erythema', 'Surface redness of a lining due to mild irritation.'] },
+                { keys: ['креатинин', 'creatinine'], ru: ['Креатинин', 'Продукт обмена мышц, который выводят почки — ключевой почечный маркер.'], en: ['Creatinine', 'Muscle byproduct filtered by the kidneys — key kidney marker.'] },
+                { keys: ['мочевина', 'urea', 'bun'], ru: ['Мочевина (BUN)', 'Показатель белкового обмена; реагирует на работу почек и уровень гидратации.'], en: ['Urea / BUN', 'Protein breakdown marker sensitive to kidney filtration and hydration.'] },
+                { keys: ['алт', 'alt'], ru: ['АЛТ', 'Фермент клеток печени; повышается при нагрузке или раздражении печени.'], en: ['ALT', 'Liver cell enzyme that rises with liver workload or mild irritation.'] },
+                { keys: ['струвит', 'struvite'], ru: ['Струвиты', 'Кристаллы в щелочной моче, обычно поддающиеся растворению диетой.'], en: ['Struvites', 'Mineral crystals in alkaline urine, typically managed with diet and hydration.'] },
+                { keys: ['хбп', 'ckd'], ru: ['ХБП', 'Хроническая болезнь почек; при раннем выявлении хорошо контролируется.'], en: ['CKD', 'Chronic Kidney Disease; early stages are widely manageable with diet and fluids.'] },
+                { keys: ['эозинофил', 'eosinophil'], ru: ['Эозинофилы', 'Клетки крови, часто реагирующие на аллергию или паразитов.'], en: ['Eosinophils', 'White blood cells commonly elevated in allergies or parasites.'] }
+            ];
+
+            function buildOfflineFallback(rawText) {
+                const lower = (rawText || '').toLowerCase();
+                const isRu = currentLang === 'ru';
+                const isVet = currentMode === 'vet';
+
+                const matchedTerms = [];
+                OFFLINE_TERMS.forEach(item => {
+                    if (item.keys.some(k => lower.includes(k))) {
+                        const pair = isRu ? item.ru : item.en;
+                        matchedTerms.push({ term: pair[0], meaning: pair[1] });
+                    }
+                });
+
+                if (isRu) {
+                    return {
+                        title: matchedTerms.length
+                            ? `Офлайн-разбор: найдено терминов — ${matchedTerms.length}`
+                            : (isVet ? 'Базовый офлайн-разбор ветеринарного текста' : 'Базовый офлайн-разбор документа'),
+                        statusLevel: 'attention',
+                        statusLabel: 'Офлайн-режим',
+                        summary: matchedTerms.length
+                            ? 'В тексте распознаны ключевые клинические термины — нажмите на любой из них ниже, чтобы увидеть спокойное объяснение.'
+                            : 'Живой ИИ сейчас недоступен, поэтому показана базовая структура подготовки к приёму. Вы можете повторить запрос или добавить свой Gemini API-ключ в настройках.',
+                        plainExplanation: matchedTerms.length
+                            ? `Мы выделили из вашего текста следующие понятия: ${matchedTerms.map(t => t.term).join(', ')}. Сами по себе отдельные слова из бланка не являются диагнозом — специалист всегда оценивает их в комплексе с самочувствием и историей.\n\nДля глубокого разбора конкретных цифр нажмите «Повторить ИИ» выше.`
+                            : `Полноценный анализ произвольного текста и фотографий выполняется через Gemini AI. Сейчас соединение с API не ответило, но вы можете воспользоваться готовыми примерами в 1 клик или повторить попытку через несколько секунд.`,
+                        attentionPoints: [
+                            isVet ? 'Не сравнивайте цифры из бланка питомца с человеческими нормами.' : 'Не пытайтесь ставить диагноз по одному показателю вне контекста.',
+                            'Запишите симптомы и их длительность перед визитом к специалисту.',
+                            'При острых или быстро ухудшающихся симптомах обратитесь за очной помощью.'
+                        ],
+                        terms: matchedTerms,
+                        questionsForDoctor: isVet ? [
+                            'Какие показатели в этом бланке действительно отклоняются от нормы именно для моего питомца?',
+                            'Нужны ли дополнительные анализы (например, мочи или УЗИ) для уточнения картины?',
+                            'На какие изменения в поведении, аппетите или питье мне обратить внимание дома?'
+                        ] : [
+                            'Какие показатели в этом документе наиболее важны в моей ситуации?',
+                            'Нужны ли дополнительные обследования или повторный контроль через время?',
+                            'Какие шаги по образу жизни или лечению вы рекомендуете сейчас?'
+                        ]
+                    };
+                } else {
+                    return {
+                        title: matchedTerms.length
+                            ? `Offline analysis: ${matchedTerms.length} key term(s) recognized`
+                            : (isVet ? 'Basic offline veterinary summary' : 'Basic offline document summary'),
+                        statusLevel: 'attention',
+                        statusLabel: 'Offline Fallback',
+                        summary: matchedTerms.length
+                            ? 'Key clinical terms were detected in your text — click any chip below for a calm, plain-language definition.'
+                            : 'Live AI could not be reached right now, so a structured visit checklist is shown. You can retry or add your own Gemini API key in Settings.',
+                        plainExplanation: matchedTerms.length
+                            ? `We identified these terms in your input: ${matchedTerms.map(t => t.term).join(', ')}. Individual words on a report are rarely a full diagnosis on their own — clinicians always interpret them alongside symptoms and history.\n\nClick "Retry AI" above for a full number-by-number interpretation.`
+                            : `Full free-text and photo analysis runs via Gemini AI. While the network call could not complete, you can explore the 1-click example cases or retry shortly.`,
+                        attentionPoints: [
+                            isVet ? 'Always compare values against species-specific norms, never human ranges.' : 'Avoid interpreting a single lab number in isolation.',
+                            'Jot down any symptoms and when they started before your appointment.',
+                            'For acute or worsening symptoms, always seek prompt in-person care.'
+                        ],
+                        terms: matchedTerms,
+                        questionsForDoctor: isVet ? [
+                            'Which values on this report are truly outside the normal range for my pet’s species and age?',
+                            'Are any follow-up tests (like urinalysis or ultrasound) recommended?',
+                            'What signs in appetite, hydration, or energy should I watch for at home?'
+                        ] : [
+                            'Which findings on this report are most relevant to how I am feeling?',
+                            'Do I need any follow-up testing or routine rechecks?',
+                            'What practical next steps do you recommend?'
+                        ]
+                    };
+                }
+            }
+
+            // ---------------------------------------------------------
+            // 6. DOM REFERENCES
+            // ---------------------------------------------------------
+            const htmlEl = document.documentElement;
+            const bodyEl = document.body;
+
+            const themeToggleBtn = document.getElementById('theme-toggle');
+            const iconMoon = document.getElementById('icon-moon');
+            const iconSun = document.getElementById('icon-sun');
+            const langRuBtn = document.getElementById('lang-ru-btn');
+            const langEnBtn = document.getElementById('lang-en-btn');
+
+            const settingsBtn = document.getElementById('settings-btn');
+            const customKeyDot = document.getElementById('custom-key-dot');
+            const settingsModal = document.getElementById('settings-modal');
+            const modalCloseBtn = document.getElementById('modal-close-btn');
+            const apiKeyInput = document.getElementById('api-key-input');
+            const modalSaveKeyBtn = document.getElementById('modal-save-key-btn');
+            const modalClearKeyBtn = document.getElementById('modal-clear-key-btn');
+
+            const modeHumanBtn = document.getElementById('mode-human-btn');
+            const modeVetBtn = document.getElementById('mode-vet-btn');
+            const petSelector = document.getElementById('pet-selector');
+            const petChips = document.querySelectorAll('.pet-chip');
+            const toneSimpleBtn = document.getElementById('tone-simple-btn');
+            const toneDetailedBtn = document.getElementById('tone-detailed-btn');
+            const exampleChipsContainer = document.getElementById('example-chips-container');
+
+            const inputCardTitle = document.getElementById('input-card-title');
+            const inputEl = document.getElementById('medical-input');
+            const inputDropzone = document.getElementById('input-dropzone');
+            const charCountEl = document.getElementById('char-count');
+            const fileUploadInput = document.getElementById('file-upload-input');
+            const uploadTriggerBtn = document.getElementById('upload-trigger-btn');
+            const imagePreviewWrap = document.getElementById('image-preview-wrap');
+            const imagePreviewThumb = document.getElementById('image-preview-thumb');
+            const imagePreviewName = document.getElementById('image-preview-name');
+            const removeImageBtn = document.getElementById('remove-image-btn');
+            const clearBtn = document.getElementById('clear-btn');
+            const translateBtn = document.getElementById('translate-btn');
+
+            const sourceBadge = document.getElementById('source-badge');
+            const retranslateAiBtn = document.getElementById('retranslate-ai-btn');
+            const fallbackBanner = document.getElementById('fallback-banner');
+            const retryAiBtn = document.getElementById('retry-ai-btn');
+            const openSettingsInlineBtn = document.getElementById('open-settings-inline-btn');
+
+            const stateEmpty = document.getElementById('state-empty');
+            const stateLoading = document.getElementById('state-loading');
+            const loadingStatusText = document.getElementById('loading-status-text');
+            const stateResult = document.getElementById('state-result');
+
+            const resTitle = document.getElementById('res-title');
+            const resStatusPill = document.getElementById('res-status-pill');
+            const resSummary = document.getElementById('res-summary');
+            const resExplanation = document.getElementById('res-explanation');
+            const resAttentionBox = document.getElementById('res-attention-box');
+            const resAttentionDot = document.getElementById('res-attention-dot');
+            const resAttentionList = document.getElementById('res-attention-list');
+            const resTermsWrap = document.getElementById('res-terms-wrap');
+            const resTermsList = document.getElementById('res-terms-list');
+            const resQuestionsHeading = document.getElementById('res-questions-heading');
+            const resQuestionsList = document.getElementById('res-questions-list');
+
+            const copyFullBtn = document.getElementById('copy-full-btn');
+            const copyQuestionsBtn = document.getElementById('copy-questions-btn');
+            const printMemoBtn = document.getElementById('print-memo-btn');
+
+            const historyBar = document.getElementById('history-bar');
+            const historyItemsEl = document.getElementById('history-items');
+            const clearHistoryBtn = document.getElementById('clear-history-btn');
+
+            const vetGlossaryGrid = document.getElementById('vet-glossary-grid');
+            const vetGlossaryTitle = document.getElementById('vet-glossary-title');
+            const vetGlossaryDesc = document.getElementById('vet-glossary-desc');
+
+            const tooltipEl = document.getElementById('term-tooltip');
+            const tooltipTerm = document.getElementById('tooltip-term');
+            const tooltipDesc = document.getElementById('tooltip-desc');
+            const tooltipClose = document.getElementById('tooltip-close');
+            const toastEl = document.getElementById('toast');
+            const toastMessage = document.getElementById('toast-message');
+
+            // ---------------------------------------------------------
+            // 7. HELPERS
+            // ---------------------------------------------------------
+            function t() { return I18N[currentLang]; }
+
+            function escapeHtml(str) {
+                return String(str || '')
+                    .replace(/&/g, '&amp;')
+                    .replace(/</g, '&lt;')
+                    .replace(/>/g, '&gt;')
+                    .replace(/"/g, '&quot;');
+            }
+
+            function showToast(msg) {
+                toastMessage.textContent = msg;
+                toastEl.classList.remove('translate-y-20', 'opacity-0');
+                toastEl.classList.add('translate-y-0', 'opacity-100');
+                clearTimeout(toastTimer);
+                toastTimer = setTimeout(() => {
+                    toastEl.classList.add('translate-y-20', 'opacity-0');
+                    toastEl.classList.remove('translate-y-0', 'opacity-100');
+                }, 2800);
+            }
+
+            function copyText(text) {
+                try {
+                    const ta = document.createElement('textarea');
+                    ta.value = text;
+                    ta.style.position = 'fixed';
+                    ta.style.left = '-9999px';
+                    document.body.appendChild(ta);
+                    ta.focus();
+                    ta.select();
+                    const ok = document.execCommand('copy');
+                    document.body.removeChild(ta);
+                    return ok;
+                } catch (e) {
+                    return false;
+                }
+            }
+
+            function getCustomApiKey() {
+                try { return (localStorage.getItem(KEYS.APIKEY) || '').trim(); } catch (e) { return ''; }
+            }
+
+            function refreshCustomKeyIndicator() {
+                const hasKey = Boolean(getCustomApiKey());
+                customKeyDot.classList.toggle('hidden', !hasKey);
+            }
+
+            function updateCharCount() {
+                charCountEl.textContent = t().chars(inputEl.value.length);
+            }
+
+            // ---------------------------------------------------------
+            // 8. THEME & LANGUAGE APPLICATION
+            // ---------------------------------------------------------
+            function applyTheme(theme) {
+                htmlEl.setAttribute('data-theme', theme);
+                iconMoon.classList.toggle('hidden', theme === 'dark');
+                iconSun.classList.toggle('hidden', theme !== 'dark');
+                try { localStorage.setItem(KEYS.THEME, theme); } catch (e) {}
+            }
+
+            themeToggleBtn.addEventListener('click', () => {
+                applyTheme(htmlEl.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+            });
+
+            function renderHowItWorks() {
+                const icons = [
+                    `<svg class="w-5 h-5 text-ink" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="3"/><path d="M8 9h8M8 13h5"/></svg>`,
+                    `<svg class="w-5 h-5 text-accent" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.9 5.8L20 11l-6.1 2.2L12 19l-1.9-5.8L4 11l6.1-2.2L12 3z"/></svg>`,
+                    `<svg class="w-5 h-5 text-ink" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>`,
+                    `<svg class="w-5 h-5 text-ink" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>`
+                ];
+                document.getElementById('how-grid').innerHTML = t().howSteps.map((s, idx) => `
+                    <div class="editorial-card bento-card rounded-bento p-6 flex flex-col justify-between">
+                        <div class="flex items-start justify-between mb-8">
+                            <span class="font-mono text-sm font-medium px-3 py-1 rounded-full ${idx === 1 ? 'bg-accentSoft text-accent border border-accentSoft' : 'bg-surface text-ink border border-warm'}">${s.num}</span>
+                            <div class="w-11 h-11 rounded-2xl ${idx === 1 ? 'bg-accentSoft border border-accentSoft' : 'bg-surface border border-warm'} flex items-center justify-center">
+                                ${icons[idx]}
+                            </div>
+                        </div>
+                        <div>
+                            <h3 class="font-heading font-semibold text-lg text-ink mb-2">${escapeHtml(s.title)}</h3>
+                            <p class="text-sm text-muted leading-relaxed">${escapeHtml(s.desc)}</p>
+                        </div>
+                    </div>
+                `).join('');
+            }
+
+            function renderVetGlossary() {
+                const keys = Object.keys(VET_GLOSSARY);
+                vetGlossaryGrid.innerHTML = keys.map(k => {
+                    const entry = VET_GLOSSARY[k][currentLang];
+                    const isActive = k === activeVetGlossaryKey;
+                    return `
+                        <button type="button" data-vet-term="${k}" class="vet-term-card text-left p-3.5 rounded-2xl border transition-all cursor-pointer ${isActive ? 'bg-vetSoft border-vetSoft' : 'bg-surface border-warm hover:bg-surfaceHover'}">
+                            <div class="font-mono text-sm font-semibold ${isActive ? 'text-vet' : 'text-ink'}">${escapeHtml(entry.code)}</div>
+                            <div class="text-xs text-muted mt-0.5">${escapeHtml(entry.sub)}</div>
+                        </button>
+                    `;
+                }).join('');
+
+                const activeEntry = VET_GLOSSARY[activeVetGlossaryKey][currentLang];
+                vetGlossaryTitle.textContent = activeEntry.title;
+                vetGlossaryDesc.textContent = activeEntry.desc;
+            }
+
+            function renderExampleChips() {
+                const list = EXAMPLES[currentLang][currentMode];
+                exampleChipsContainer.innerHTML = list.map(ex => {
+                    const isActive = activeExampleId === ex.id;
+                    const cls = isActive
+                        ? 'bg-activeSoft text-activeAccent border-activeSoft'
+                        : 'bg-surface hover:bg-surfaceHover text-ink border-warm';
+                    return `<button type="button" data-example-id="${ex.id}" class="example-chip px-3.5 py-2 rounded-full text-xs sm:text-sm font-medium border transition-all active:scale-[0.98] cursor-pointer ${cls}">${escapeHtml(ex.label)}</button>`;
+                }).join('');
+            }
+
+            function applyLanguage(lang) {
+                currentLang = lang;
+                htmlEl.setAttribute('lang', lang);
+                try { localStorage.setItem(KEYS.LANG, lang); } catch (e) {}
+
+                // Switcher button state
+                if (lang === 'ru') {
+                    langRuBtn.className = 'px-2.5 py-1 rounded-full text-xs font-semibold transition-all cursor-pointer bg-card text-ink border border-warm';
+                    langEnBtn.className = 'px-2.5 py-1 rounded-full text-xs font-semibold transition-all cursor-pointer text-muted hover:text-ink border border-transparent';
+                } else {
+                    langEnBtn.className = 'px-2.5 py-1 rounded-full text-xs font-semibold transition-all cursor-pointer bg-card text-ink border border-warm';
+                    langRuBtn.className = 'px-2.5 py-1 rounded-full text-xs font-semibold transition-all cursor-pointer text-muted hover:text-ink border border-transparent';
+                }
+
+                const d = t();
+                document.title = d.pageTitle;
+                document.getElementById('brand-name').textContent = d.brand;
+                document.getElementById('footer-brand').textContent = d.brand;
+                document.getElementById('brand-tagline').textContent = d.tagline;
+                document.getElementById('nav-translator').textContent = d.navTranslator;
+                document.getElementById('nav-vet').textContent = d.navVet;
+                document.getElementById('nav-how').textContent = d.navHow;
+                document.getElementById('nav-privacy').textContent = d.navPrivacy;
+                document.getElementById('ai-badge-text').textContent = d.aiBadge;
+
+                document.getElementById('hero-kicker-1').textContent = d.heroKicker1;
+                document.getElementById('hero-kicker-2').textContent = d.heroKicker2;
+                document.getElementById('hero-title').textContent = d.heroTitle;
+                document.getElementById('hero-subtitle').textContent = d.heroSubtitle;
+                document.getElementById('stat-1-val').textContent = d.stat1Val;
+                document.getElementById('stat-1-lbl').textContent = d.stat1Lbl;
+                document.getElementById('stat-2-val').textContent = d.stat2Val;
+                document.getElementById('stat-2-lbl').textContent = d.stat2Lbl;
+                document.getElementById('stat-3-val').textContent = d.stat3Val;
+                document.getElementById('stat-3-lbl').textContent = d.stat3Lbl;
+
+                document.getElementById('mode-human-label').textContent = d.modeHuman;
+                document.getElementById('mode-vet-label').textContent = d.modeVet;
+                document.getElementById('pet-label-prefix').textContent = d.petPrefix;
+                petChips.forEach(chip => {
+                    chip.textContent = d.pets[chip.dataset.petKey];
+                });
+
+                document.getElementById('tone-prefix').textContent = d.tonePrefix;
+                toneSimpleBtn.textContent = d.toneSimple;
+                toneDetailedBtn.textContent = d.toneDetailed;
+                document.getElementById('examples-prefix').textContent = d.examplesPrefix;
+
+                inputCardTitle.textContent = currentMode === 'vet' ? d.inputTitleVet : d.inputTitleHuman;
+                inputEl.placeholder = currentMode === 'vet' ? d.placeholderVet : d.placeholderHuman;
+                document.getElementById('image-preview-hint').textContent = d.imageHint;
+                removeImageBtn.textContent = d.removeImg;
+                document.getElementById('upload-btn-label').textContent = d.uploadBtn;
+                clearBtn.textContent = d.clearBtn;
+                document.getElementById('translate-btn-label').textContent = d.translateBtn;
+
+                document.getElementById('output-card-title').textContent = d.outputTitle;
+                retranslateAiBtn.textContent = d.retranslateAi;
+                document.getElementById('fallback-title').textContent = d.fallbackTitle;
+                document.getElementById('fallback-desc').textContent = d.fallbackDesc;
+                retryAiBtn.textContent = d.retryAi;
+                openSettingsInlineBtn.textContent = d.apiKeyBtn;
+
+                document.getElementById('empty-title').textContent = d.emptyTitle;
+                document.getElementById('empty-desc').textContent = d.emptyDesc;
+                document.getElementById('res-explanation-heading').textContent = d.resExpHeading;
+                document.getElementById('res-attention-heading').textContent = d.resAttHeading;
+                document.getElementById('res-terms-heading').textContent = d.resTermsHeading;
+                document.getElementById('res-terms-hint').textContent = d.resTermsHint;
+                resQuestionsHeading.textContent = currentMode === 'vet' ? d.resQHeadingVet : d.resQHeadingHuman;
+                document.getElementById('copy-full-label').textContent = d.copyFull;
+                document.getElementById('copy-questions-label').textContent = currentMode === 'vet' ? d.copyQVet : d.copyQHuman;
+                document.getElementById('print-btn-label').textContent = d.printBtn;
+                document.getElementById('print-title').textContent = d.printTitle;
+                document.getElementById('print-sub').textContent = d.printSub;
+                document.getElementById('history-label').textContent = d.historyLabel;
+                clearHistoryBtn.textContent = d.clearHistory;
+
+                // Vet Bento Section
+                document.getElementById('vet-sec-kicker').textContent = d.vetSecKicker;
+                document.getElementById('vet-sec-title').textContent = d.vetSecTitle;
+                document.getElementById('vet-jump-label-1').textContent = d.vetJump1;
+                document.getElementById('jump-to-vet-btn-2').textContent = d.vetJump2;
+                document.getElementById('vet-norm-badge').textContent = d.vetNormBadge;
+                document.getElementById('vet-norm-title').textContent = d.vetNormTitle;
+                document.getElementById('vet-norm-desc').textContent = d.vetNormDesc;
+                document.getElementById('tbl-col-1').textContent = d.tblCol1;
+                document.getElementById('tbl-col-2').textContent = d.tblCol2;
+                document.getElementById('tbl-col-3').textContent = d.tblCol3;
+                document.getElementById('tbl-r1').textContent = d.tblR1;
+                document.getElementById('tbl-r2').textContent = d.tblR2;
+                document.getElementById('tbl-r2-h').textContent = d.tblR2H;
+                document.getElementById('tbl-r2-c').textContent = d.tblR2C;
+                document.getElementById('tbl-r3').textContent = d.tblR3;
+                document.getElementById('vet-gloss-heading').textContent = d.vetGlossHeading;
+                document.getElementById('vet-gloss-sub').textContent = d.vetGlossSub;
+                document.getElementById('vet-gloss-count').textContent = d.vetGlossCount;
+                document.getElementById('vet-check-kicker').textContent = d.vetCheckKicker;
+                document.getElementById('vet-check-title').textContent = d.vetCheckTitle;
+                document.getElementById('vet-checklist-ul').innerHTML = d.vetChecklist.map((item, i) => `
+                    <li class="flex items-start gap-2.5">
+                        <span class="font-mono text-xs font-semibold text-vet mt-0.5">0${i + 1}</span>
+                        <span><strong class="text-ink font-medium">${escapeHtml(item[0])}</strong> — ${escapeHtml(item[1])}</span>
+                    </li>
+                `).join('');
+
+                // How It Works + Privacy + Footer + Modal
+                document.getElementById('how-kicker').textContent = d.howKicker;
+                document.getElementById('how-title').textContent = d.howTitle;
+                renderHowItWorks();
+
+                document.getElementById('priv-kicker').textContent = d.privKicker;
+                document.getElementById('priv-title').textContent = d.privTitle;
+                document.getElementById('priv-desc').textContent = d.privDesc;
+                document.getElementById('priv-card-title').textContent = d.privCardTitle;
+                document.getElementById('priv-card-desc').textContent = d.privCardDesc;
+                document.getElementById('priv-badges').innerHTML = d.privBadges.map(b =>
+                    `<span class="text-xs font-medium px-3 py-1 rounded-full bg-card text-ink border border-warm">${escapeHtml(b)}</span>`
+                ).join('');
+
+                document.getElementById('footer-note').textContent = d.footerNote;
+                document.getElementById('foot-nav-1').textContent = d.navTranslator;
+                document.getElementById('foot-nav-2').textContent = d.navVet;
+                document.getElementById('foot-nav-3').textContent = d.navHow;
+                document.getElementById('foot-nav-4').textContent = d.navPrivacy;
+
+                document.getElementById('modal-title').textContent = d.modalTitle;
+                document.getElementById('modal-desc').textContent = d.modalDesc;
+                document.getElementById('modal-label').textContent = d.modalLabel;
+                modalClearKeyBtn.textContent = d.modalClear;
+                modalSaveKeyBtn.textContent = d.modalSave;
+
+                // Update dynamic components
+                renderVetGlossary();
+                renderExampleChips();
+                updateCharCount();
+
+                // If an example is currently active, switch its displayed content to the new language too
+                if (activeExampleId) {
+                    const ex = EXAMPLES[currentLang][currentMode].find(e => e.id === activeExampleId);
+                    if (ex) {
+                        inputEl.value = ex.input;
+                        updateCharCount();
+                        renderResult(ex.reference, 'reference');
+                    }
+                } else if (currentResult) {
+                    updateSourceBadgeText();
+                }
+            }
+
+            langRuBtn.addEventListener('click', () => applyLanguage('ru'));
+            langEnBtn.addEventListener('click', () => applyLanguage('en'));
+
+            // ---------------------------------------------------------
+            // 9. MODE, PET, AND TONE SWITCHING
+            // ---------------------------------------------------------
+            function setMode(mode) {
+                currentMode = mode;
+                bodyEl.setAttribute('data-mode', mode);
+                activeExampleId = null;
+
+                if (mode === 'vet') {
+                    modeVetBtn.className = 'inline-flex items-center gap-2 px-4 sm:px-5 py-2.5 rounded-xl text-sm font-semibold transition-all cursor-pointer bg-card text-ink border border-warm';
+                    modeHumanBtn.className = 'inline-flex items-center gap-2 px-4 sm:px-5 py-2.5 rounded-xl text-sm font-semibold transition-all cursor-pointer text-muted hover:text-ink border border-transparent';
+                    modeVetBtn.setAttribute('aria-selected', 'true');
+                    modeHumanBtn.setAttribute('aria-selected', 'false');
+                    petSelector.classList.remove('hidden');
+                    petSelector.classList.add('flex');
+                } else {
+                    modeHumanBtn.className = 'inline-flex items-center gap-2 px-4 sm:px-5 py-2.5 rounded-xl text-sm font-semibold transition-all cursor-pointer bg-card text-ink border border-warm';
+                    modeVetBtn.className = 'inline-flex items-center gap-2 px-4 sm:px-5 py-2.5 rounded-xl text-sm font-semibold transition-all cursor-pointer text-muted hover:text-ink border border-transparent';
+                    modeHumanBtn.setAttribute('aria-selected', 'true');
+                    modeVetBtn.setAttribute('aria-selected', 'false');
+                    petSelector.classList.add('hidden');
+                    petSelector.classList.remove('flex');
+                }
+
+                const d = t();
+                inputCardTitle.textContent = mode === 'vet' ? d.inputTitleVet : d.inputTitleHuman;
+                inputEl.placeholder = mode === 'vet' ? d.placeholderVet : d.placeholderHuman;
+                resQuestionsHeading.textContent = mode === 'vet' ? d.resQHeadingVet : d.resQHeadingHuman;
+                document.getElementById('copy-questions-label').textContent = mode === 'vet' ? d.copyQVet : d.copyQHuman;
+                renderExampleChips();
+            }
+
+            function setPet(petKey) {
+                currentPetKey = petKey;
+                petChips.forEach(chip => {
+                    if (chip.dataset.petKey === petKey) {
+                        chip.className = 'pet-chip px-3 py-1.5 rounded-full text-xs font-medium border transition-colors cursor-pointer bg-vetSoft text-vet border-vetSoft';
+                    } else {
+                        chip.className = 'pet-chip px-3 py-1.5 rounded-full text-xs font-medium border transition-colors cursor-pointer bg-surface text-ink border-warm hover:bg-surfaceHover';
+                    }
+                });
+            }
+
+            function setTone(tone) {
+                currentTone = tone;
+                if (tone === 'simple') {
+                    toneSimpleBtn.className = 'px-3.5 py-1.5 rounded-lg text-xs sm:text-sm font-medium transition-all cursor-pointer bg-card text-ink border border-warm';
+                    toneDetailedBtn.className = 'px-3.5 py-1.5 rounded-lg text-xs sm:text-sm font-medium transition-all cursor-pointer text-muted hover:text-ink border border-transparent';
+                } else {
+                    toneDetailedBtn.className = 'px-3.5 py-1.5 rounded-lg text-xs sm:text-sm font-medium transition-all cursor-pointer bg-card text-ink border border-warm';
+                    toneSimpleBtn.className = 'px-3.5 py-1.5 rounded-lg text-xs sm:text-sm font-medium transition-all cursor-pointer text-muted hover:text-ink border border-transparent';
+                }
+            }
+
+            modeHumanBtn.addEventListener('click', () => setMode('human'));
+            modeVetBtn.addEventListener('click', () => setMode('vet'));
+            petChips.forEach(chip => chip.addEventListener('click', () => setPet(chip.dataset.petKey)));
+            toneSimpleBtn.addEventListener('click', () => setTone('simple'));
+            toneDetailedBtn.addEventListener('click', () => setTone('detailed'));
+
+            function jumpToVet() {
+                setMode('vet');
+                document.getElementById('translator').scrollIntoView({ behavior: 'smooth' });
+                showToast(t().toasts.vetModeOn);
+            }
+            document.getElementById('jump-to-vet-btn').addEventListener('click', jumpToVet);
+            document.getElementById('jump-to-vet-btn-2').addEventListener('click', jumpToVet);
+
+            // ---------------------------------------------------------
+            // 10. OPTIONAL API KEY MODAL
+            // ---------------------------------------------------------
+            function openSettingsModal() {
+                apiKeyInput.value = getCustomApiKey();
+                settingsModal.classList.remove('hidden');
+                apiKeyInput.focus();
+            }
+            function closeSettingsModal() {
+                settingsModal.classList.add('hidden');
+            }
+
+            settingsBtn.addEventListener('click', openSettingsModal);
+            openSettingsInlineBtn.addEventListener('click', openSettingsModal);
+            modalCloseBtn.addEventListener('click', closeSettingsModal);
+            settingsModal.addEventListener('click', (e) => {
+                if (e.target === settingsModal) closeSettingsModal();
+            });
+            modalSaveKeyBtn.addEventListener('click', () => {
+                const val = apiKeyInput.value.trim();
+                try {
+                    if (val) localStorage.setItem(KEYS.APIKEY, val);
+                    else localStorage.removeItem(KEYS.APIKEY);
+                } catch (e) {}
+                refreshCustomKeyIndicator();
+                closeSettingsModal();
+                showToast(val ? t().toasts.keySaved : t().toasts.keyCleared);
+            });
+            modalClearKeyBtn.addEventListener('click', () => {
+                apiKeyInput.value = '';
+                try { localStorage.removeItem(KEYS.APIKEY); } catch (e) {}
+                refreshCustomKeyIndicator();
+                showToast(t().toasts.keyCleared);
+            });
+
+            // ---------------------------------------------------------
+            // 11. IMAGE UPLOAD (MULTIMODAL BASE64)
+            // ---------------------------------------------------------
+            function handleImageFile(file) {
+                if (!file) return;
+                if (!file.type.startsWith('image/')) {
+                    showToast(t().toasts.imgBadType);
+                    return;
+                }
+                if (file.size > 10 * 1024 * 1024) {
+                    showToast(t().toasts.imgTooBig);
+                    return;
+                }
+
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const dataUrl = e.target.result;
+                    const base64 = dataUrl.split(',')[1];
+                    uploadedImage = {
+                        base64,
+                        mimeType: file.type || 'image/jpeg',
+                        name: file.name
+                    };
+                    imagePreviewThumb.src = dataUrl;
+                    imagePreviewName.textContent = file.name;
+                    imagePreviewWrap.classList.remove('hidden');
+                    showToast(t().toasts.imgAttached);
+                };
+                reader.readAsDataURL(file);
+            }
+
+            function clearUploadedImage() {
+                uploadedImage = null;
+                fileUploadInput.value = '';
+                imagePreviewThumb.src = '';
+                imagePreviewWrap.classList.add('hidden');
+            }
+
+            uploadTriggerBtn.addEventListener('click', () => fileUploadInput.click());
+            fileUploadInput.addEventListener('change', (e) => handleImageFile(e.target.files[0]));
+            removeImageBtn.addEventListener('click', clearUploadedImage);
+
+            ['dragenter', 'dragover'].forEach(ev => {
+                inputDropzone.addEventListener(ev, (e) => {
+                    e.preventDefault();
+                    inputDropzone.classList.add('dropzone-active');
+                });
+            });
+            ['dragleave', 'drop'].forEach(ev => {
+                inputDropzone.addEventListener(ev, (e) => {
+                    e.preventDefault();
+                    inputDropzone.classList.remove('dropzone-active');
+                });
+            });
+            inputDropzone.addEventListener('drop', (e) => {
+                const file = e.dataTransfer.files[0];
+                if (file) handleImageFile(file);
+            });
+
+            // ---------------------------------------------------------
+            // 12. RELIABLE GEMINI API INTEGRATION + DEFENSIVE JSON PARSER
+            // ---------------------------------------------------------
+            function extractJsonDefensively(text) {
+                if (!text || typeof text !== 'string') throw new Error('Empty text');
+                // Strip markdown code fences if present
+                let cleaned = text
+                    .replace(/```json\s*/gi, '')
+                    .replace(/```\s*/g, '')
+                    .trim();
+
+                const firstBrace = cleaned.indexOf('{');
+                const lastBrace = cleaned.lastIndexOf('}');
+                if (firstBrace === -1 || lastBrace === -1 || lastBrace <= firstBrace) {
+                    throw new Error('No JSON object found');
+                }
+                const jsonSlice = cleaned.slice(firstBrace, lastBrace + 1);
+                return JSON.parse(jsonSlice);
+            }
+
+            async function fetchWithBackoff(url, options, maxRetries = 2) {
+                let delay = 1000;
+                for (let attempt = 0; attempt <= maxRetries; attempt++) {
+                    try {
+                        const resp = await fetch(url, options);
+                        if (resp.ok) return await resp.json();
+                        if ((resp.status === 429 || resp.status >= 500) && attempt < maxRetries) {
+                            await new Promise(r => setTimeout(r, delay));
+                            delay *= 2;
+                            continue;
+                        }
+                        const err = new Error(`HTTP ${resp.status}`);
+                        err.status = resp.status;
+                        throw err;
+                    } catch (err) {
+                        if (attempt < maxRetries && (!err.status || err.status === 429 || err.status >= 500)) {
+                            await new Promise(r => setTimeout(r, delay));
+                            delay *= 2;
+                        } else {
+                            throw err;
+                        }
+                    }
+                }
+            }
+
+            async function callGeminiTranslator(rawText, imgObj) {
+                const apiKey = ""; // Canvas runtime injects key automatically when empty
+                const activeKey = getCustomApiKey() || apiKey;
+
+                const isRu = currentLang === 'ru';
+                const isVet = currentMode === 'vet';
+                const petName = t().pets[currentPetKey];
+                const langName = isRu ? 'Russian' : 'English';
+
+                const toneGuide = currentTone === 'simple'
+                    ? (isRu ? 'Объясняй МАКСИМАЛЬНО просто, тепло и бережно, без канцелярита.' : 'Explain in VERY simple, warm, reassuring everyday language without jargon.')
+                    : (isRu ? 'Дай подробный, структурированный и спокойный разбор конкретных цифр и показателей.' : 'Provide a detailed, structured, calm breakdown of the specific numbers and findings.');
+
+                const domainGuide = isVet
+                    ? (isRu
+                        ? `Ты — эмпатичный ветеринарный переводчик. Переводишь документ для владельца питомца (${petName}). Учитывай видовые нормы именно для этого животного, а не человеческие. Не ставь диагноз и не назначай дозировки.`
+                        : `You are an empathetic veterinary translator explaining a report to the owner of a pet (${petName}). Always use species-specific norms, never human ranges. Do not diagnose or prescribe dosages.`)
+                    : (isRu
+                        ? `Ты — эмпатичный медицинский переводчик. Спокойно и бережно переводишь медицинские анализы и заключения на понятный язык. Не ставь диагнозы и не назначай лечение.`
+                        : `You are an empathetic medical translator calmly explaining clinical reports in plain language. Do not diagnose or prescribe treatment.`);
+
+                const promptInstruction = `${domainGuide}
+${toneGuide}
+Write ALL text strictly in ${langName}.
+Return ONLY a valid JSON object (no markdown fences, no extra prose) matching this exact structure:
+{
+  "title": "short calm headline",
+  "statusLevel": "calm" | "attention" | "urgent",
+  "statusLabel": "short 2-4 word status badge in ${langName}",
+  "summary": "1-2 sentence calm summary",
+  "plainExplanation": "2 short paragraphs separated by \\n\\n",
+  "attentionPoints": ["point 1", "point 2", "point 3"],
+  "terms": [{"term": "Term", "meaning": "Simple explanation"}],
+  "questionsForDoctor": ["question 1", "question 2", "question 3"]
+}
+
+Document to translate:
+${rawText ? rawText : (isRu ? 'Прочти текст с прикреплённого фото справки и расшифруй его.' : 'Read the text from the attached report photo and translate it.')}`;
+
+                const parts = [{ text: promptInstruction }];
+                if (imgObj && imgObj.base64) {
+                    parts.push({
+                        inlineData: {
+                            mimeType: imgObj.mimeType,
+                            data: imgObj.base64
+                        }
+                    });
+                }
+
+                const payload = {
+                    contents: [{ parts }]
+                };
+
+                // Try primary endpoint first; if 404 (e.g. model alias difference), try fallback Gemini Flash endpoint
+                const endpoints = [
+                    `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${activeKey}`,
+                    `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${activeKey}`
+                ];
+
+                let lastError = null;
+                for (const url of endpoints) {
+                    try {
+                        const result = await fetchWithBackoff(url, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(payload)
+                        }, 2);
+
+                        const rawOut = result?.candidates?.[0]?.content?.parts?.[0]?.text;
+                        const parsed = extractJsonDefensively(rawOut);
+                        return {
+                            title: parsed.title || (isRu ? 'Расшифровка документа' : 'Document Summary'),
+                            statusLevel: ['calm', 'attention', 'urgent'].includes(parsed.statusLevel) ? parsed.statusLevel : 'calm',
+                            statusLabel: parsed.statusLabel || (isRu ? 'Разобрано' : 'Reviewed'),
+                            summary: parsed.summary || '',
+                            plainExplanation: parsed.plainExplanation || '',
+                            attentionPoints: Array.isArray(parsed.attentionPoints) ? parsed.attentionPoints : [],
+                            terms: Array.isArray(parsed.terms) ? parsed.terms : [],
+                            questionsForDoctor: Array.isArray(parsed.questionsForDoctor) ? parsed.questionsForDoctor : []
+                        };
+                    } catch (err) {
+                        lastError = err;
+                    }
+                }
+                throw lastError || new Error('Gemini request failed');
+            }
+
+            // ---------------------------------------------------------
+            // 13. RENDER RESULT & LOADING STATES
+            // ---------------------------------------------------------
+            function updateSourceBadgeText() {
+                const d = t();
+                if (currentResultSource === 'ai') {
+                    sourceBadge.textContent = d.badgeAi;
+                    sourceBadge.classList.remove('hidden');
+                    retranslateAiBtn.classList.add('hidden');
+                    fallbackBanner.classList.add('hidden');
+                } else if (currentResultSource === 'offline') {
+                    sourceBadge.textContent = d.badgeOffline;
+                    sourceBadge.classList.remove('hidden');
+                    retranslateAiBtn.classList.add('hidden');
+                    fallbackBanner.classList.remove('hidden');
+                } else {
+                    sourceBadge.textContent = d.badgeRef;
+                    sourceBadge.classList.remove('hidden');
+                    retranslateAiBtn.classList.remove('hidden');
+                    fallbackBanner.classList.add('hidden');
+                }
+            }
+
+            function startLoadingUI() {
+                hideTooltip();
+                stateEmpty.classList.add('hidden');
+                stateResult.classList.add('hidden');
+                fallbackBanner.classList.add('hidden');
+                sourceBadge.classList.add('hidden');
+                retranslateAiBtn.classList.add('hidden');
+                stateLoading.classList.remove('hidden');
+
+                const statuses = currentMode === 'vet' ? t().loadingVet : t().loadingHuman;
+                let step = 0;
+                loadingStatusText.textContent = statuses[0];
+                clearInterval(loadingInterval);
+                loadingInterval = setInterval(() => {
+                    step = (step + 1) % statuses.length;
+                    loadingStatusText.textContent = statuses[step];
+                }, 1400);
+
+                translateBtn.disabled = true;
+                translateBtn.classList.add('opacity-70', 'cursor-wait');
+            }
+
+            function stopLoadingUI() {
+                clearInterval(loadingInterval);
+                translateBtn.disabled = false;
+                translateBtn.classList.remove('opacity-70', 'cursor-wait');
+            }
+
+            function renderResult(data, source = 'ai') {
+                stopLoadingUI();
+                currentResult = data;
+                currentResultSource = source;
+
+                resTitle.textContent = data.title || '';
+                resSummary.textContent = data.summary || '';
+
+                const level = data.statusLevel || 'calm';
+                if (level === 'urgent') {
+                    resStatusPill.className = 'inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1 rounded-full border shrink-0 bg-urgentBg text-urgentText border-urgentBorder';
+                    resStatusPill.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-urgent"></span>${escapeHtml(data.statusLabel)}`;
+                    resAttentionBox.className = 'rounded-2xl p-4 border bg-urgentBg border-urgentBorder text-ink';
+                    resAttentionDot.className = 'w-2 h-2 rounded-full bg-urgent';
+                } else if (level === 'attention') {
+                    resStatusPill.className = 'inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1 rounded-full border shrink-0 bg-amberBg text-amberText border-amberBorder';
+                    resStatusPill.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-amberWarm"></span>${escapeHtml(data.statusLabel)}`;
+                    resAttentionBox.className = 'rounded-2xl p-4 border bg-amberBg border-amberBorder text-ink';
+                    resAttentionDot.className = 'w-2 h-2 rounded-full bg-amberWarm';
+                } else {
+                    resStatusPill.className = 'inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1 rounded-full border shrink-0 bg-surface text-ink border-warm';
+                    resStatusPill.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-activeAccent"></span>${escapeHtml(data.statusLabel)}`;
+                    resAttentionBox.className = 'rounded-2xl p-4 border bg-surface border-warm text-ink';
+                    resAttentionDot.className = 'w-2 h-2 rounded-full bg-activeAccent';
+                }
+
+                const paragraphs = String(data.plainExplanation || '').split(/\n+/).map(p => p.trim()).filter(Boolean);
+                resExplanation.innerHTML = paragraphs.map(p => `<p>${escapeHtml(p)}</p>`).join('');
+
+                const points = Array.isArray(data.attentionPoints) ? data.attentionPoints : [];
+                resAttentionList.innerHTML = points.map(pt => `
+                    <li class="flex items-start gap-2.5">
+                        <span class="text-activeAccent font-bold leading-5">•</span>
+                        <span>${escapeHtml(pt)}</span>
+                    </li>
+                `).join('');
+
+                const terms = Array.isArray(data.terms) ? data.terms : [];
+                if (terms.length > 0) {
+                    resTermsWrap.classList.remove('hidden');
+                    resTermsList.innerHTML = terms.map((item, idx) => `
+                        <button type="button" data-term-idx="${idx}" class="term-chip inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs sm:text-sm font-medium bg-activeSoft hover:bg-surfaceHover text-ink border border-activeSoft transition-colors cursor-pointer">
+                            <span class="font-mono text-xs text-activeAccent">#</span>
+                            <span>${escapeHtml(item.term)}</span>
+                        </button>
+                    `).join('');
+                } else {
+                    resTermsWrap.classList.add('hidden');
+                }
+
+                const questions = Array.isArray(data.questionsForDoctor) ? data.questionsForDoctor : [];
+                resQuestionsList.innerHTML = questions.map((q, idx) => `
+                    <li class="flex items-start gap-2.5">
+                        <span class="font-mono text-xs font-semibold text-activeAccent mt-0.5 shrink-0">0${idx + 1}</span>
+                        <span class="leading-relaxed">${escapeHtml(q)}</span>
+                    </li>
+                `).join('');
+
+                updateSourceBadgeText();
+
+                stateEmpty.classList.add('hidden');
+                stateLoading.classList.add('hidden');
+                stateResult.classList.remove('hidden');
+            }
+
+            async function runAiTranslation() {
+                const text = inputEl.value.trim();
+                if (!text && !uploadedImage) {
+                    showToast(t().toasts.emptyInput);
+                    inputEl.focus();
+                    return;
+                }
+
+                startLoadingUI();
+                try {
+                    const aiData = await callGeminiTranslator(text, uploadedImage);
+                    renderResult(aiData, 'ai');
+                    saveToHistory({
+                        id: Date.now(),
+                        lang: currentLang,
+                        mode: currentMode,
+                        petKey: currentPetKey,
+                        inputText: text || `[Photo: ${uploadedImage?.name || 'report'}]`,
+                        result: aiData
+                    });
+                } catch (err) {
+                    // Graceful offline fallback so demos never hit a dead end
+                    const fallbackData = buildOfflineFallback(text);
+                    renderResult(fallbackData, 'offline');
+                }
+            }
+
+            // ---------------------------------------------------------
+            // 14. LOCAL STORAGE HISTORY
+            // ---------------------------------------------------------
+            function loadHistory() {
+                try {
+                    const raw = localStorage.getItem(KEYS.HISTORY);
+                    return raw ? JSON.parse(raw) : [];
+                } catch (e) { return []; }
+            }
+
+            function saveToHistory(entry) {
+                try {
+                    const list = loadHistory().filter(item => item.result?.title !== entry.result?.title);
+                    list.unshift(entry);
+                    localStorage.setItem(KEYS.HISTORY, JSON.stringify(list.slice(0, 6)));
+                    renderHistoryBar();
+                } catch (e) {}
+            }
+
+            function renderHistoryBar() {
+                const list = loadHistory();
+                if (!list.length) {
+                    historyBar.classList.add('hidden');
+                    return;
+                }
+                historyBar.classList.remove('hidden');
+                historyItemsEl.innerHTML = list.map(item => `
+                    <button type="button" data-history-id="${item.id}" class="history-pill inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium bg-surface hover:bg-surfaceHover text-ink border border-warm transition-colors whitespace-nowrap cursor-pointer shrink-0">
+                        <span class="w-1.5 h-1.5 rounded-full ${item.mode === 'vet' ? 'bg-vet' : 'bg-accent'}"></span>
+                        <span class="max-w-[190px] truncate">${escapeHtml(item.result?.title || 'Summary')}</span>
+                    </button>
+                `).join('');
+            }
+
+            historyItemsEl.addEventListener('click', (e) => {
+                const btn = e.target.closest('.history-pill');
+                if (!btn) return;
+                const found = loadHistory().find(item => item.id === Number(btn.dataset.historyId));
+                if (!found) return;
+                activeExampleId = null;
+                setMode(found.mode || 'human');
+                if (found.mode === 'vet' && found.petKey) setPet(found.petKey);
+                inputEl.value = found.inputText || '';
+                updateCharCount();
+                renderResult(found.result, 'ai');
+                showToast(t().toasts.historyLoaded);
+            });
+
+            clearHistoryBtn.addEventListener('click', () => {
+                try { localStorage.removeItem(KEYS.HISTORY); } catch (e) {}
+                renderHistoryBar();
+                showToast(t().toasts.historyCleared);
+            });
+
+            // ---------------------------------------------------------
+            // 15. TOOLTIP & VET GLOSSARY INTERACTION
+            // ---------------------------------------------------------
+            function showTooltip(targetEl, termObj) {
+                activeTooltipEl = targetEl;
+                tooltipTerm.textContent = termObj.term;
+                tooltipDesc.textContent = termObj.meaning;
+                tooltipEl.classList.remove('hidden');
+
+                const rect = targetEl.getBoundingClientRect();
+                const tipRect = tooltipEl.getBoundingClientRect();
+                const pad = 12;
+
+                let top = rect.top - tipRect.height - 10;
+                if (top < pad) top = rect.bottom + 10;
+                let left = rect.left + rect.width / 2 - tipRect.width / 2;
+                if (left < pad) left = pad;
+                if (left + tipRect.width > window.innerWidth - pad) left = window.innerWidth - tipRect.width - pad;
+
+                tooltipEl.style.top = `${top}px`;
+                tooltipEl.style.left = `${left}px`;
+            }
+
+            function hideTooltip() {
+                tooltipEl.classList.add('hidden');
+                activeTooltipEl = null;
+            }
+
+            resTermsList.addEventListener('click', (e) => {
+                const chip = e.target.closest('.term-chip');
+                if (!chip || !currentResult?.terms) return;
+                e.stopPropagation();
+                const termObj = currentResult.terms[Number(chip.dataset.termIdx)];
+                if (!termObj) return;
+                if (activeTooltipEl === chip) hideTooltip();
+                else showTooltip(chip, termObj);
+            });
+
+            tooltipClose.addEventListener('click', (e) => { e.stopPropagation(); hideTooltip(); });
+            document.addEventListener('click', (e) => {
+                if (!tooltipEl.contains(e.target) && !e.target.closest('.term-chip')) hideTooltip();
+            });
+            window.addEventListener('scroll', hideTooltip, { passive: true });
+            window.addEventListener('resize', hideTooltip);
+
+            vetGlossaryGrid.addEventListener('click', (e) => {
+                const card = e.target.closest('.vet-term-card');
+                if (!card) return;
+                activeVetGlossaryKey = card.dataset.vetTerm;
+                renderVetGlossary();
+            });
+
+            // ---------------------------------------------------------
+            // 16. MAIN ACTIONS (EXAMPLES, TRANSLATE, CLEAR, COPY, PRINT)
+            // ---------------------------------------------------------
+            exampleChipsContainer.addEventListener('click', (e) => {
+                const chip = e.target.closest('.example-chip');
+                if (!chip) return;
+                const ex = EXAMPLES[currentLang][currentMode].find(item => item.id === chip.dataset.exampleId);
+                if (!ex) return;
+
+                activeExampleId = ex.id;
+                clearUploadedImage();
+                if (ex.pet) setPet(ex.pet);
+                inputEl.value = ex.input;
+                updateCharCount();
+                renderExampleChips();
+                renderResult(ex.reference, 'reference');
+            });
+
+            inputEl.addEventListener('input', () => {
+                updateCharCount();
+                if (activeExampleId) {
+                    activeExampleId = null;
+                    renderExampleChips();
+                }
+            });
+
+            inputEl.addEventListener('keydown', (e) => {
+                if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+                    e.preventDefault();
+                    runAiTranslation();
+                }
+            });
+
+            translateBtn.addEventListener('click', runAiTranslation);
+            retranslateAiBtn.addEventListener('click', runAiTranslation);
+            retryAiBtn.addEventListener('click', runAiTranslation);
+
+            clearBtn.addEventListener('click', () => {
+                inputEl.value = '';
+                clearUploadedImage();
+                activeExampleId = null;
+                currentResult = null;
+                updateCharCount();
+                renderExampleChips();
+                hideTooltip();
+                fallbackBanner.classList.add('hidden');
+                stateResult.classList.add('hidden');
+                stateLoading.classList.add('hidden');
+                sourceBadge.classList.add('hidden');
+                retranslateAiBtn.classList.add('hidden');
+                stateEmpty.classList.remove('hidden');
+                inputEl.focus();
+            });
+
+            copyFullBtn.addEventListener('click', () => {
+                if (!currentResult) return;
+                const d = t();
+                const lines = [
+                    `${d.brand}. — ${currentResult.title}`,
+                    `${currentResult.statusLabel}`,
+                    '',
+                    currentResult.summary,
+                    '',
+                    currentResult.plainExplanation,
+                    '',
+                    `${d.resAttHeading}:`,
+                    ...(currentResult.attentionPoints || []).map(p => `• ${p}`),
+                    '',
+                    `${currentMode === 'vet' ? d.resQHeadingVet : d.resQHeadingHuman}:`,
+                    ...(currentResult.questionsForDoctor || []).map((q, i) => `${i + 1}. ${q}`)
+                ];
+                showToast(copyText(lines.join('\n')) ? d.toasts.copiedFull : d.toasts.copyFail);
+            });
+
+            copyQuestionsBtn.addEventListener('click', () => {
+                if (!currentResult?.questionsForDoctor?.length) return;
+                const d = t();
+                const heading = currentMode === 'vet' ? d.resQHeadingVet : d.resQHeadingHuman;
+                const text = `${heading} (${d.brand}.):\n` + currentResult.questionsForDoctor.map((q, i) => `${i + 1}. ${q}`).join('\n');
+                showToast(copyText(text) ? d.toasts.copiedQ : d.toasts.copyFail);
+            });
+
+            printMemoBtn.addEventListener('click', () => {
+                if (currentResult) window.print();
+            });
+
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape') {
+                    hideTooltip();
+                    closeSettingsModal();
+                }
+            });
+
+            // ---------------------------------------------------------
+            // 17. INITIALIZE APP
+            // ---------------------------------------------------------
+            try {
+                const savedTheme = localStorage.getItem(KEYS.THEME);
+                if (savedTheme === 'dark' || savedTheme === 'light') applyTheme(savedTheme);
+                const savedLang = localStorage.getItem(KEYS.LANG);
+                if (savedLang === 'ru' || savedLang === 'en') currentLang = savedLang;
+            } catch (e) {}
+
+            refreshCustomKeyIndicator();
+            setMode('human');
+            setPet('cat');
+            setTone('simple');
+            applyLanguage(currentLang);
+            renderHistoryBar();
+        });
+    </script>
+</body>
+</html>
