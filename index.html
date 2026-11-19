@@ -168,10 +168,10 @@
             padding-inline: clamp(20px, 3vw, 56px);
         }
 
-        /* iOS Safari & Telegram WebView Anti-Bleed Fixed Header */
+        /* iOS Safari Safe Sticky Auto-Hide Header */
         html, body {
             overflow-x: clip;
-            scroll-padding-top: 96px;
+            scroll-padding-top: 84px;
         }
 
         body {
@@ -181,37 +181,23 @@
         }
 
         #site-header {
-            position: fixed;
+            position: sticky;
             top: 0;
-            left: 0;
-            right: 0;
             z-index: 40;
             padding-top: env(safe-area-inset-top, 0px);
             background-color: var(--bg-page);
             border-bottom: 1px solid var(--border);
-            transition: background-color 0.25s ease, border-color 0.25s ease;
+            will-change: transform;
+            transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1), background-color 0.25s ease, border-color 0.25s ease;
         }
 
-        #site-header::before {
-            content: "";
-            position: absolute;
-            left: 0;
-            right: 0;
-            bottom: 100%;
-            height: 180px;
-            background-color: var(--bg-page);
+        #site-header.header-hidden {
+            transform: translateY(calc(-100% - 8px));
             pointer-events: none;
-            transition: background-color 0.25s ease;
         }
 
         #site-main {
-            padding-top: calc(4rem + env(safe-area-inset-top, 0px));
-        }
-
-        @media (min-width: 640px) {
-            #site-main {
-                padding-top: calc(5rem + env(safe-area-inset-top, 0px));
-            }
+            padding-top: 0;
         }
 
         #translator,
@@ -537,16 +523,20 @@
                                 </svg>
                             </button>
 
-                            <!-- Inline Custom Animal Input (Normal Flow, 16px on Mobile = Zero Zoom & Zero Keyboard Glitch) -->
-                            <form id="pet-other-inline-form" class="hidden w-full sm:w-auto flex items-center gap-1.5 mt-1.5 sm:mt-0 sm:ml-1">
+                            <!-- Inline Custom Animal Input (Native Input, Guaranteed 16px = No Zoom, No Fixed Popover) -->
+                            <form id="pet-other-inline-form" class="hidden basis-full sm:basis-auto w-full sm:w-auto items-center gap-2 mt-2 sm:mt-0 sm:ml-1 relative z-10">
                                 <input
                                     type="text"
                                     id="pet-other-custom-input"
+                                    inputmode="text"
+                                    enterkeyhint="done"
                                     autocomplete="off"
+                                    autocorrect="off"
                                     placeholder="Кролик, лошадь, коза..."
-                                    class="flex-1 sm:w-48 min-w-0 px-3 py-1.5 rounded-full bg-card border border-warm text-[16px] sm:text-xs text-ink placeholder:text-muted focus:outline-none"
+                                    style="font-size: 16px;"
+                                    class="flex-1 sm:w-52 min-w-0 px-3.5 py-2 sm:py-1.5 rounded-full bg-card border border-warm text-ink placeholder:text-muted focus:outline-none"
                                 >
-                                <button type="submit" id="pet-other-custom-apply" class="px-3 py-1.5 rounded-full text-xs font-semibold bg-vet hover:bg-vetHover text-white transition-colors cursor-pointer shrink-0">OK</button>
+                                <button type="submit" id="pet-other-custom-apply" class="px-3.5 py-2 sm:py-1.5 rounded-full text-xs font-semibold bg-vet hover:bg-vetHover text-white transition-colors cursor-pointer shrink-0">OK</button>
                             </form>
                         </div>
                     </div>
@@ -2816,12 +2806,19 @@
             function openPetOtherInline() {
                 petOtherCustomInput.value = currentOtherPetCustom;
                 petOtherInlineForm.classList.remove('hidden');
+                petOtherInlineForm.classList.add('flex');
                 petOtherBtn.setAttribute('aria-expanded', 'true');
                 petOtherChevron.style.transform = 'rotate(180deg)';
+                try {
+                    petOtherCustomInput.focus({ preventScroll: true });
+                } catch (e) {
+                    petOtherCustomInput.focus();
+                }
             }
 
             function closePetOtherInline() {
                 petOtherInlineForm.classList.add('hidden');
+                petOtherInlineForm.classList.remove('flex');
                 petOtherBtn.setAttribute('aria-expanded', 'false');
                 petOtherChevron.style.transform = '';
             }
@@ -4047,9 +4044,23 @@ ${userQuestion}`;
                 if (!tooltipEl.contains(e.target) && !e.target.closest('.term-chip')) hideTooltip();
                 if (!apiWhyPopover.contains(e.target) && e.target !== apiWhyBtn) hideApiWhyPopover(true);
             });
+            const siteHeader = document.getElementById('site-header');
+            let lastScrollY = window.scrollY || 0;
+
             window.addEventListener('scroll', () => {
                 hideTooltip();
                 hideApiWhyPopover(true);
+
+                const currentY = Math.max(0, window.scrollY || 0);
+                const delta = currentY - lastScrollY;
+                if (currentY <= 48) {
+                    siteHeader.classList.remove('header-hidden');
+                } else if (delta > 8) {
+                    siteHeader.classList.add('header-hidden');
+                } else if (delta < -8) {
+                    siteHeader.classList.remove('header-hidden');
+                }
+                lastScrollY = currentY;
             }, { passive: true });
             window.addEventListener('resize', () => {
                 hideTooltip();
