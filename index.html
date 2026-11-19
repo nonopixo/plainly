@@ -2851,7 +2851,11 @@
                 petOtherPopover.classList.add('is-open');
                 petOtherBtn.setAttribute('aria-expanded', 'true');
                 petOtherChevron.style.transform = 'rotate(180deg)';
-                setTimeout(() => petOtherCustomInput.focus(), 50);
+                try {
+                    petOtherCustomInput.focus({ preventScroll: true });
+                } catch (e) {
+                    petOtherCustomInput.focus();
+                }
             }
 
             function closePetOtherPopover() {
@@ -4083,12 +4087,20 @@ ${userQuestion}`;
             window.addEventListener('scroll', () => {
                 hideTooltip();
                 hideApiWhyPopover(true);
-                closePetOtherPopover();
+                if (petOtherPopover.classList.contains('is-open')) {
+                    if (document.activeElement === petOtherCustomInput) {
+                        positionPetOtherPopover();
+                    } else {
+                        closePetOtherPopover();
+                    }
+                }
             }, { passive: true });
             window.addEventListener('resize', () => {
                 hideTooltip();
                 hideApiWhyPopover(true);
-                closePetOtherPopover();
+                if (petOtherPopover.classList.contains('is-open')) {
+                    positionPetOtherPopover();
+                }
             });
 
             vetGlossaryGrid.addEventListener('click', (e) => {
