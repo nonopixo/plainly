@@ -340,6 +340,7 @@
             #site-header,
             footer,
             #hero-intro,
+            #hero-disclaimer,
             #translator-controls,
             #examples-bar,
             #input-card,
@@ -457,7 +458,7 @@
             <div class="wide-container">
 
                 <!-- Hero Intro -->
-                <div id="hero-intro" class="flex flex-col xl:flex-row xl:items-end justify-between gap-6 pb-8 mb-8 border-b divider">
+                <div id="hero-intro" class="flex flex-col xl:flex-row xl:items-end justify-between gap-6 pb-7 mb-5 border-b divider">
                     <div class="max-w-3xl">
                         <div class="inline-flex items-center gap-2 text-[11px] sm:text-xs font-semibold uppercase tracking-[0.14em] text-activeAccent mb-3">
                             <span id="hero-kicker-1">Редакционный ИИ-переводчик</span>
@@ -487,6 +488,16 @@
                             <div id="stat-3-lbl" class="text-[11px] sm:text-xs text-muted leading-snug mt-1">Спокойный тон</div>
                         </div>
                     </div>
+                </div>
+
+                <!-- Concise Trust / Medical Disclaimer Banner -->
+                <div id="hero-disclaimer" class="mb-6 px-4 py-3 rounded-2xl bg-surface border border-warm flex items-start sm:items-center gap-3">
+                    <svg class="w-4 h-4 text-activeAccent shrink-0 mt-0.5 sm:mt-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                    </svg>
+                    <p id="hero-disclaimer-text" class="text-xs sm:text-[13.5px] leading-relaxed text-muted">
+                        Сервис не ставит диагнозы и не назначает лечение.
+                    </p>
                 </div>
 
                 <!-- STUDIO TOP CONTROL BAR -->
@@ -636,7 +647,7 @@
                         <div id="fallback-banner" class="hidden mt-4 p-3.5 rounded-2xl bg-amberBg border border-amberBorder flex flex-wrap items-center justify-between gap-3 fade-slide-up">
                             <div class="text-xs sm:text-sm text-amberText leading-snug flex-1 min-w-[200px]">
                                 <strong id="fallback-title" class="font-semibold">ИИ недоступен — показан офлайн-разбор.</strong>
-                                <span id="fallback-desc" class="block opacity-95 mt-0.5">Проверьте сеть или укажите бесплатный ключ OpenRouter в настройках (⚙).</span>
+                                <span id="fallback-desc" class="block opacity-95 mt-0.5">Проверьте сеть или укажите API-ключ (например, бесплатный Groq) в настройках (⚙).</span>
                             </div>
                             <div class="flex items-center gap-2 shrink-0">
                                 <button type="button" id="retry-ai-btn" class="px-3 py-1.5 rounded-xl text-xs font-semibold bg-card text-ink border border-warm hover:bg-surface transition-colors cursor-pointer">
@@ -1080,16 +1091,20 @@
                     Выберите ИИ-провайдера и вставьте свой API-ключ для работы переводчика. Ключи хранятся только локально в вашем браузере.
                 </p>
 
-                <!-- 2-Provider Selector Tabs (OpenRouter & Gemini) -->
+                <!-- Multi-Provider Selector Tabs -->
                 <div class="mt-4">
                     <div id="modal-provider-label" class="text-xs font-semibold uppercase tracking-wider text-muted mb-2">Провайдер ИИ</div>
-                    <div id="provider-grid" class="grid grid-cols-2 gap-2">
-                        <button type="button" data-provider="openrouter" class="provider-btn flex items-center justify-between gap-2 px-3.5 py-2.5 rounded-xl border text-left text-xs sm:text-sm font-semibold transition-all cursor-pointer">
-                            <span>OpenRouter</span>
+                    <div id="provider-grid" class="grid grid-cols-3 gap-2">
+                        <button type="button" data-provider="groq" class="provider-btn flex items-center justify-between gap-1.5 px-3 py-2.5 rounded-xl border text-left text-xs font-semibold transition-all cursor-pointer">
+                            <span>Groq</span>
                             <span class="provider-saved-dot hidden w-2 h-2 rounded-full bg-accent shrink-0"></span>
                         </button>
-                        <button type="button" data-provider="gemini" class="provider-btn flex items-center justify-between gap-2 px-3.5 py-2.5 rounded-xl border text-left text-xs sm:text-sm font-semibold transition-all cursor-pointer">
+                        <button type="button" data-provider="gemini" class="provider-btn flex items-center justify-between gap-1.5 px-3 py-2.5 rounded-xl border text-left text-xs font-semibold transition-all cursor-pointer">
                             <span>Gemini</span>
+                            <span class="provider-saved-dot hidden w-2 h-2 rounded-full bg-accent shrink-0"></span>
+                        </button>
+                        <button type="button" data-provider="custom" class="provider-btn flex items-center justify-between gap-1.5 px-3 py-2.5 rounded-xl border text-left text-xs font-semibold transition-all cursor-pointer">
+                            <span id="provider-custom-btn-label">Свой API</span>
                             <span class="provider-saved-dot hidden w-2 h-2 rounded-full bg-accent shrink-0"></span>
                         </button>
                     </div>
@@ -1098,17 +1113,29 @@
 
                 <!-- API Key Input Group -->
                 <div class="mt-4 space-y-1.5">
-                    <label for="api-key-input" id="modal-label" class="block text-xs font-semibold uppercase tracking-wider text-muted">API-ключ · OpenRouter</label>
-                    <input type="password" id="api-key-input" placeholder="sk-or-v1-..." class="w-full px-3.5 py-2.5 rounded-xl bg-surface border border-warm text-sm font-mono text-ink placeholder:text-muted focus:outline-none">
+                    <label for="api-key-input" id="modal-label" class="block text-xs font-semibold uppercase tracking-wider text-muted">API-ключ · Groq</label>
+                    <input type="password" id="api-key-input" placeholder="gsk_..." class="w-full px-3.5 py-2.5 rounded-xl bg-surface border border-warm text-sm font-mono text-ink placeholder:text-muted focus:outline-none">
+                </div>
+
+                <!-- Custom OpenAI-Compatible Fields -->
+                <div id="custom-provider-fields" class="hidden mt-3 space-y-2.5">
+                    <div class="space-y-1">
+                        <label for="custom-url-input" id="custom-url-label" class="block text-[11px] font-semibold uppercase tracking-wider text-muted">Base URL (endpoint)</label>
+                        <input type="text" id="custom-url-input" placeholder="https://api.example.com/v1/chat/completions" class="w-full px-3 py-2 rounded-xl bg-surface border border-warm text-xs font-mono text-ink placeholder:text-muted focus:outline-none">
+                    </div>
+                    <div class="space-y-1">
+                        <label for="custom-model-input" id="custom-model-label" class="block text-[11px] font-semibold uppercase tracking-wider text-muted">Название модели</label>
+                        <input type="text" id="custom-model-input" placeholder="gpt-4o-mini / llama-3.3-70b / ..." class="w-full px-3 py-2 rounded-xl bg-surface border border-warm text-xs font-mono text-ink placeholder:text-muted focus:outline-none">
+                    </div>
                 </div>
 
                 <!-- Clean Neutral Full-Width External Key Link Button -->
-                <a href="https://openrouter.ai/keys" target="_blank" rel="noopener noreferrer" id="modal-get-key-link" class="mt-5 flex items-center justify-between gap-2 w-full px-3.5 py-2.5 rounded-xl bg-surface hover:bg-surfaceHover border border-warm text-xs sm:text-sm font-medium text-ink transition-colors">
+                <a href="https://console.groq.com/keys" target="_blank" rel="noopener noreferrer" id="modal-get-key-link" class="mt-5 flex items-center justify-between gap-2 w-full px-3.5 py-2.5 rounded-xl bg-surface hover:bg-surfaceHover border border-warm text-xs sm:text-sm font-medium text-ink transition-colors">
                     <span class="flex items-center gap-2 min-w-0">
                         <svg class="w-4 h-4 text-muted shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                             <path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/>
                         </svg>
-                        <span id="modal-get-key-label" class="truncate">Получить бесплатный ключ в OpenRouter</span>
+                        <span id="modal-get-key-label" class="truncate">Получить бесплатный ключ в Groq Console</span>
                     </span>
                     <svg class="w-3.5 h-3.5 text-muted shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                         <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
@@ -1179,25 +1206,27 @@
                 THEME: 'plainly_theme_v2',
                 LANG: 'plainly_lang_v2',
                 PROVIDER: 'plainly_provider_v1',
+                CUSTOM_URL: 'plainly_custom_url_v1',
+                CUSTOM_MODEL: 'plainly_custom_model_v1',
                 LEGACY_GEMINI_KEY: 'plainly_gemini_apikey_v1',
                 keyFor: (providerId) => `plainly_key_${providerId}`,
                 legacyKeyFor: (providerId) => `plainly_apikey_${providerId}`
             };
 
             const AI_PROVIDERS = {
-                openrouter: {
-                    id: 'openrouter',
-                    name: 'OpenRouter',
+                groq: {
+                    id: 'groq',
+                    name: 'Groq',
                     supportsVision: true,
-                    placeholder: 'sk-or-v1-...',
-                    keyUrl: 'https://openrouter.ai/keys',
+                    placeholder: 'gsk_...',
+                    keyUrl: 'https://console.groq.com/keys',
                     tag: {
-                        ru: 'Бесплатные модели • Без VPN • Текст и фото',
-                        en: 'Free models • No VPN • Text & Photo'
+                        ru: 'Бесплатный тариф • Очень быстрый • Текст и фото',
+                        en: 'Free tier • Ultra-fast • Text & Photo'
                     },
                     linkLabel: {
-                        ru: 'Получить бесплатный ключ в OpenRouter',
-                        en: 'Get free API key in OpenRouter'
+                        ru: 'Получить бесплатный ключ в Groq Console',
+                        en: 'Get free API key in Groq Console'
                     }
                 },
                 gemini: {
@@ -1207,12 +1236,27 @@
                     placeholder: 'AIza...',
                     keyUrl: 'https://aistudio.google.com/apikey',
                     tag: {
-                        ru: 'Бесплатный тариф • Нужен VPN из РФ • Текст и фото',
-                        en: 'Free tier • VPN may be needed • Text & Photo'
+                        ru: 'Бесплатный тариф • Текст и фото',
+                        en: 'Free tier • Text & Photo'
                     },
                     linkLabel: {
-                        ru: 'Получить бесплатный ключ в Google AI Studio',
-                        en: 'Get free API key in Google AI Studio'
+                        ru: 'Получить ключ в Google AI Studio',
+                        en: 'Get API key in Google AI Studio'
+                    }
+                },
+                custom: {
+                    id: 'custom',
+                    name: 'Custom API',
+                    supportsVision: true,
+                    placeholder: 'sk-...',
+                    keyUrl: '',
+                    tag: {
+                        ru: 'Любой OpenAI-совместимый API (Mistral, Together, локальный и др.)',
+                        en: 'Any OpenAI-compatible API (Mistral, Together, local, etc.)'
+                    },
+                    linkLabel: {
+                        ru: '',
+                        en: ''
                     }
                 }
             };
@@ -1221,12 +1265,12 @@
             let currentMode = 'human';
             let currentPetKey = 'cat';
             let currentTone = 'simple';
-            let currentProvider = 'openrouter';
-            let modalSelectedProvider = 'openrouter';
+            let currentProvider = 'groq';
+            let modalSelectedProvider = 'groq';
 
             let currentResult = null;
             let currentResultSource = 'ai';
-            let currentResultProvider = 'openrouter';
+            let currentResultProvider = 'groq';
             let currentSourceText = '';
             let currentCheckAnswers = {}; // { idx: 'yes' | 'no' }
             let followupHistory = [];     // [{ q, a, pending? }]
@@ -1260,6 +1304,7 @@
                     stat1Val: '2 режима', stat1Lbl: 'Люди и питомцы',
                     stat2Val: 'Фото + Текст', stat2Lbl: 'Распознаёт бланки',
                     stat3Val: 'Без паники', stat3Lbl: 'Спокойный тон',
+                    heroDisclaimerText: 'Сервис не ставит диагнозы и не назначает лечение.',
                     modeHuman: 'Для людей',
                     modeVet: 'Ветеринария',
                     petPrefix: 'Питомец:',
@@ -1283,7 +1328,7 @@
                     badgeRef: 'Эталонный пример',
                     badgeOffline: 'Офлайн-разбор',
                     fallbackTitle: 'ИИ недоступен — показан офлайн-разбор.',
-                    fallbackDefaultDesc: 'Проверьте сеть или укажите бесплатный ключ OpenRouter в настройках (⚙).',
+                    fallbackDefaultDesc: 'Проверьте сеть или укажите API-ключ (например, бесплатный Groq) в настройках (⚙).',
                     retryAi: 'Повторить ИИ',
                     apiKeyBtn: 'Настройки ИИ',
                     emptyTitle: 'Спокойная расшифровка появится здесь',
@@ -1382,13 +1427,16 @@
                     testKeySuccess: (name) => `Ключ работает ✓ (${name})`,
                     apiWhyTitle: 'Почему нужно вводить свой ключ?',
                     apiWhyBody: 'Сайт работает полностью в вашем браузере без собственного сервера. Если вшить общий ключ в открытый код, боты сразу его украдут и заблокируют. Ваш личный ключ хранится только локально в браузере, никуда не передаётся и не зависит от чужих лимитов.',
+                    customBtnLabel: 'Свой API',
+                    customModelLabel: 'Название модели',
                     errors: {
-                        missingKey: (name) => `Не указан API-ключ для ${name}. Откройте настройки (⚙) и добавьте бесплатный ключ OpenRouter или Gemini.`,
+                        missingKey: (name) => `Не указан API-ключ для ${name}. Откройте настройки (⚙) и добавьте ключ (например, бесплатный Groq или Gemini).`,
+                        missingEndpoint: () => 'Для «Свой API» нужно указать Base URL в настройках (⚙).',
                         401: (name) => `Неверный API-ключ для ${name} (HTTP 401). Проверьте, что ключ скопирован полностью и без лишних пробелов.`,
-                        402: (name) => `На аккаунте ${name} недостаточно баланса (HTTP 402). Используйте бесплатные модели OpenRouter или проверьте лимит в настройках (⚙).`,
-                        403: (name) => `Доступ к ${name} ограничен по региону (HTTP 403). Включите VPN или переключитесь на OpenRouter (работает без VPN).`,
-                        429: (name) => `Превышен лимит запросов у ${name} (HTTP 429). Подождите минуту и попробуйте снова.`,
-                        network: (name) => `Не удалось связаться с ${name}. Проверьте интернет, VPN (для Gemini) или переключитесь на OpenRouter.`
+                        402: (name) => `На аккаунте ${name} недостаточно баланса (HTTP 402). Пополните счёт или переключитесь на бесплатный Groq в настройках (⚙).`,
+                        403: (name) => `Доступ к ${name} ограничен по региону или правам ключа (HTTP 403). Попробуйте включить VPN или выбрать другой провайдер в настройках (⚙).`,
+                        429: (name) => `Превышен лимит запросов у ${name} (HTTP 429). Подождите минуту или переключите провайдер в настройках (⚙).`,
+                        network: (name) => `Не удалось связаться с ${name}. Проверьте интернет, VPN или выберите другого провайдера в настройках (⚙).`
                     },
                     toasts: {
                         emptyInput: 'Вставьте текст, загрузите фото или выберите пример выше.',
@@ -1427,6 +1475,7 @@
                     stat1Val: '2 modes', stat1Lbl: 'Humans & pets',
                     stat2Val: 'Photo + Text', stat2Lbl: 'Reads lab sheets',
                     stat3Val: 'Zero panic', stat3Lbl: 'Calm tone',
+                    heroDisclaimerText: 'This service does not diagnose conditions or prescribe treatment.',
                     modeHuman: 'For Humans',
                     modeVet: 'Veterinary',
                     petPrefix: 'Pet:',
@@ -1450,7 +1499,7 @@
                     badgeRef: 'Sample Case',
                     badgeOffline: 'Offline Fallback',
                     fallbackTitle: 'Live AI unavailable — showing offline analysis.',
-                    fallbackDefaultDesc: 'Check your connection or add a free OpenRouter key in Settings (⚙).',
+                    fallbackDefaultDesc: 'Check your connection or add an API key (e.g., free Groq) in Settings (⚙).',
                     retryAi: 'Retry AI',
                     apiKeyBtn: 'AI Settings',
                     emptyTitle: 'Your calm explanation will appear here',
@@ -1549,13 +1598,16 @@
                     testKeySuccess: (name) => `Key works ✓ (${name})`,
                     apiWhyTitle: 'Why do I need my own key?',
                     apiWhyBody: 'This app runs 100% client-side in your browser with no backend server. Embedding a shared key in public code would immediately expose it to bots and get it revoked. Your personal key stays strictly in your local browser storage, keeping requests private and independent of shared limits.',
+                    customBtnLabel: 'Custom API',
+                    customModelLabel: 'Model name',
                     errors: {
-                        missingKey: (name) => `No API key set for ${name}. Open Settings (⚙) and add a free OpenRouter or Gemini key.`,
+                        missingKey: (name) => `No API key set for ${name}. Open Settings (⚙) and add a key (e.g., free Groq or Gemini).`,
+                        missingEndpoint: () => 'Please specify a Base URL for Custom API in Settings (⚙).',
                         401: (name) => `Invalid API key for ${name} (HTTP 401). Please verify the key was copied completely.`,
-                        402: (name) => `Insufficient balance on ${name} (HTTP 402). Use free OpenRouter models or check your account in Settings (⚙).`,
-                        403: (name) => `Region restriction on ${name} (HTTP 403). Use a VPN or switch to OpenRouter (works without VPN).`,
-                        429: (name) => `Rate limit reached on ${name} (HTTP 429). Wait a moment and try again.`,
-                        network: (name) => `Could not reach ${name}. Check your connection, VPN (for Gemini), or try OpenRouter.`
+                        402: (name) => `Insufficient balance on ${name} (HTTP 402). Check your balance or switch to free Groq in Settings (⚙).`,
+                        403: (name) => `Access restricted on ${name} (HTTP 403). Try a VPN or switch providers in Settings (⚙).`,
+                        429: (name) => `Rate limit reached on ${name} (HTTP 429). Wait a moment or switch providers in Settings (⚙).`,
+                        network: (name) => `Could not reach ${name}. Check your connection, VPN, or try another provider in Settings (⚙).`
                     },
                     toasts: {
                         emptyInput: 'Paste text, upload a photo, or choose an example above.',
@@ -2100,8 +2152,8 @@
                             ? 'В тексте распознаны ключевые клинические термины — нажмите на любой из них ниже, чтобы увидеть спокойное объяснение.'
                             : 'Живой ИИ сейчас не ответил, поэтому показана базовая структура подготовки к приёму. Точная причина указана в жёлтой плашке выше.',
                         plainExplanation: matchedTerms.length
-                            ? `Мы выделили из вашего текста следующие понятия: ${matchedTerms.map(t => t.term).join(', ')}. Сами по себе отдельные слова из бланка не являются диагнозом — специалист всегда оценивает их в комплексе с самочувствием и историей.\n\nДля подробного разбора конкретных цифр добавьте бесплатный ключ OpenRouter в настройках (⚙).`
-                            : `Полноценный анализ произвольного текста и фотографий выполняется через выбранного ИИ-провайдера. Вы можете указать бесплатный ключ OpenRouter в настройках (⚙) либо посмотреть готовые примеры в 1 клик.`,
+                            ? `Мы выделили из вашего текста следующие понятия: ${matchedTerms.map(t => t.term).join(', ')}. Сами по себе отдельные слова из бланка не являются диагнозом — специалист всегда оценивает их в комплексе с самочувствием и историей.\n\nДля подробного разбора конкретных цифр добавьте API-ключ (например, бесплатный Groq) в настройках (⚙).`
+                            : `Полноценный анализ произвольного текста и фотографий выполняется через выбранного ИИ-провайдера. Вы можете указать API-ключ (Groq, Gemini или Свой API) в настройках (⚙) либо посмотреть готовые примеры в 1 клик.`,
                         attentionPoints: isVet ? [
                             'Есть ли сейчас отказ от еды, воды или заметная вялость у питомца?',
                             'Наблюдаются ли острая боль, частая рвота или затруднённое дыхание?',
@@ -2133,9 +2185,9 @@
                         urgencyNote: 'You can discuss this at a regular routine appointment (seek urgent care if acute symptoms appear).',
                         summary: matchedTerms.length
                             ? 'Key clinical terms were detected in your text — click any chip below for a calm, plain-language definition.'
-                            : 'Live AI could not complete the request. Check the exact reason in the banner above or switch to free OpenRouter in Settings (⚙).',
+                            : 'Live AI could not complete the request. Check the exact reason in the banner above or add a key (e.g., free Groq) in Settings (⚙).',
                         plainExplanation: matchedTerms.length
-                            ? `We identified these terms in your input: ${matchedTerms.map(t => t.term).join(', ')}. Individual words on a report are rarely a full diagnosis on their own — clinicians always interpret them alongside symptoms and history.\n\nAdd a free OpenRouter key in Settings (⚙) for a full number-by-number interpretation.`
+                            ? `We identified these terms in your input: ${matchedTerms.map(t => t.term).join(', ')}. Individual words on a report are rarely a full diagnosis on their own — clinicians always interpret them alongside symptoms and history.\n\nAdd an API key (Groq, Gemini, or Custom API) in Settings (⚙) for a full number-by-number interpretation.`
                             : `Full free-text and photo analysis runs via your selected AI provider. Check your key in Settings (⚙) or explore the 1-click example cases above.`,
                         attentionPoints: isVet ? [
                             'Is your pet refusing food or water, or acting unusually lethargic?',
@@ -2186,6 +2238,11 @@
             const providerBtns = document.querySelectorAll('.provider-btn');
             const providerHintTag = document.getElementById('provider-hint-tag');
             const apiKeyInput = document.getElementById('api-key-input');
+            const customProviderFields = document.getElementById('custom-provider-fields');
+            const customUrlInput = document.getElementById('custom-url-input');
+            const customModelInput = document.getElementById('custom-model-input');
+            const customModelLabel = document.getElementById('custom-model-label');
+            const providerCustomBtnLabel = document.getElementById('provider-custom-btn-label');
             const modalGetKeyLink = document.getElementById('modal-get-key-link');
             const modalGetKeyLabel = document.getElementById('modal-get-key-label');
             const modalSaveKeyBtn = document.getElementById('modal-save-key-btn');
@@ -2367,8 +2424,8 @@
 
             function detectProviderFromKey(keyStr) {
                 if (!keyStr) return null;
+                if (keyStr.startsWith('gsk_')) return 'groq';
                 if (keyStr.startsWith('AIza')) return 'gemini';
-                if (keyStr.startsWith('sk-or-')) return 'openrouter';
                 return null;
             }
 
@@ -2393,7 +2450,7 @@
                         if (extractedKey) {
                             const targetProvider = (rawProvider && AI_PROVIDERS[rawProvider])
                                 ? rawProvider
-                                : (detectProviderFromKey(extractedKey) || currentProvider || 'openrouter');
+                                : (detectProviderFromKey(extractedKey) || currentProvider || 'groq');
                             saveApiKeyForProvider(targetProvider, extractedKey);
                             setActiveProvider(targetProvider);
                             window.history.replaceState(null, '', window.location.pathname);
@@ -2412,12 +2469,23 @@
                 const provName = AI_PROVIDERS[providerId]?.name || providerId;
                 const errs = t().errors;
                 if (err && err.code === 'MISSING_KEY') return errs.missingKey(provName);
+                if (err && err.code === 'MISSING_ENDPOINT') return errs.missingEndpoint();
+                if (err && err.code === 'TIMEOUT') return (currentLang === 'ru'
+                    ? `Превышено время ожидания ответа от ${provName}. Проверьте интернет или включите VPN.`
+                    : `Request to ${provName} timed out. Check your connection or try a VPN.`);
                 const st = err && err.status;
-                if (st === 401) return errs[401](provName);
-                if (st === 402) return errs[402](provName);
-                if (st === 403) return errs[403](provName);
-                if (st === 429) return errs[429](provName);
-                return errs.network(provName);
+                const detail = err && err.apiMessage ? ` (${String(err.apiMessage).slice(0, 160)})` : '';
+                if (st === 401) return errs[401](provName) + detail;
+                if (st === 402) return errs[402](provName) + detail;
+                if (st === 403) return errs[403](provName) + detail;
+                if (st === 404) return (currentLang === 'ru'
+                    ? `Модель или адрес ${provName} не найдены (HTTP 404).${detail}`
+                    : `Model or endpoint not found on ${provName} (HTTP 404).${detail}`);
+                if (st === 400) return (currentLang === 'ru'
+                    ? `Запрос отклонён ${provName} (HTTP 400).${detail}`
+                    : `Request rejected by ${provName} (HTTP 400).${detail}`);
+                if (st === 429) return errs[429](provName) + detail;
+                return errs.network(provName) + detail;
             }
 
             // ---------------------------------------------------------
@@ -2522,6 +2590,7 @@
                 document.getElementById('stat-2-lbl').textContent = d.stat2Lbl;
                 document.getElementById('stat-3-val').textContent = d.stat3Val;
                 document.getElementById('stat-3-lbl').textContent = d.stat3Lbl;
+                document.getElementById('hero-disclaimer-text').textContent = d.heroDisclaimerText;
 
                 document.getElementById('mode-human-label').textContent = d.modeHuman;
                 document.getElementById('mode-vet-label').textContent = d.modeVet;
@@ -2625,6 +2694,8 @@
                 document.getElementById('modal-title').textContent = d.modalTitle;
                 document.getElementById('modal-desc').textContent = d.modalDesc;
                 document.getElementById('modal-provider-label').textContent = d.modalProviderLabel;
+                if (providerCustomBtnLabel) providerCustomBtnLabel.textContent = d.customBtnLabel;
+                if (customModelLabel) customModelLabel.textContent = d.customModelLabel;
                 modalCopyLinkBtn.textContent = d.modalCopyLink;
                 modalTestKeyLabel.textContent = d.modalTestKey;
                 modalClearKeyBtn.textContent = d.modalClear;
@@ -2803,20 +2874,35 @@
                     const hasSavedKey = Boolean(getApiKeyForProvider(pid));
 
                     if (isSelected) {
-                        btn.className = 'provider-btn flex items-center justify-between gap-2 px-3.5 py-2.5 rounded-xl border text-left text-xs sm:text-sm font-semibold transition-all cursor-pointer bg-accentSoft text-ink border-accentSoft';
+                        btn.className = 'provider-btn flex items-center justify-between gap-1.5 px-3 py-2.5 rounded-xl border text-left text-xs font-semibold transition-all cursor-pointer bg-accentSoft text-ink border-accentSoft';
                     } else {
-                        btn.className = 'provider-btn flex items-center justify-between gap-2 px-3.5 py-2.5 rounded-xl border text-left text-xs sm:text-sm font-semibold transition-all cursor-pointer bg-surface hover:bg-surfaceHover text-muted hover:text-ink border-warm';
+                        btn.className = 'provider-btn flex items-center justify-between gap-1.5 px-3 py-2.5 rounded-xl border text-left text-xs font-semibold transition-all cursor-pointer bg-surface hover:bg-surfaceHover text-muted hover:text-ink border-warm';
                     }
 
                     const dot = btn.querySelector('.provider-saved-dot');
                     if (dot) dot.classList.toggle('hidden', !hasSavedKey);
                 });
 
+                const isCustom = modalSelectedProvider === 'custom';
+                const displayName = isCustom ? d.customBtnLabel : prov.name;
+
                 providerHintTag.textContent = prov.tag[currentLang];
-                document.getElementById('modal-label').textContent = `${d.modalKeyPrefix} · ${prov.name}`;
+                document.getElementById('modal-label').textContent = `${d.modalKeyPrefix} · ${displayName}`;
                 apiKeyInput.placeholder = prov.placeholder;
-                modalGetKeyLink.href = prov.keyUrl;
-                modalGetKeyLabel.textContent = prov.linkLabel[currentLang];
+
+                customProviderFields.classList.toggle('hidden', !isCustom);
+                if (isCustom) {
+                    try {
+                        customUrlInput.value = localStorage.getItem(STORAGE.CUSTOM_URL) || '';
+                        customModelInput.value = localStorage.getItem(STORAGE.CUSTOM_MODEL) || '';
+                    } catch (e) {}
+                }
+
+                modalGetKeyLink.classList.toggle('hidden', isCustom || !prov.keyUrl);
+                if (!isCustom && prov.keyUrl) {
+                    modalGetKeyLink.href = prov.keyUrl;
+                    modalGetKeyLabel.textContent = prov.linkLabel[currentLang];
+                }
             }
 
             function clearModalTestStatus() {
@@ -2837,6 +2923,8 @@
 
             function selectModalProvider(providerId) {
                 if (!AI_PROVIDERS[providerId]) return;
+                activeTestToken++;
+                resetTestKeyBtnUI();
                 modalSelectedProvider = providerId;
                 apiKeyInput.value = getApiKeyForProvider(providerId);
                 clearModalTestStatus();
@@ -2854,6 +2942,8 @@
             }
 
             function closeSettingsModal() {
+                activeTestToken++;
+                resetTestKeyBtnUI();
                 hideApiWhyPopover(true);
                 clearModalTestStatus();
                 settingsModal.classList.add('hidden');
@@ -2873,6 +2963,12 @@
             modalSaveKeyBtn.addEventListener('click', () => {
                 const val = apiKeyInput.value.trim();
                 saveApiKeyForProvider(modalSelectedProvider, val);
+                if (modalSelectedProvider === 'custom') {
+                    try {
+                        localStorage.setItem(STORAGE.CUSTOM_URL, customUrlInput.value.trim());
+                        localStorage.setItem(STORAGE.CUSTOM_MODEL, customModelInput.value.trim());
+                    } catch (e) {}
+                }
                 setActiveProvider(modalSelectedProvider);
                 refreshCustomKeyIndicator();
                 closeSettingsModal();
@@ -2899,15 +2995,25 @@
                 showToast(copyText(shareUrl) ? t().toasts.copiedKeyLink : t().toasts.copyFail);
             });
 
+            let activeTestToken = 0;
+
+            function resetTestKeyBtnUI() {
+                modalTestKeyBtn.disabled = false;
+                modalTestKeyBtn.classList.remove('opacity-70', 'cursor-wait');
+                modalTestKeyLabel.textContent = t().modalTestKey;
+            }
+
             modalTestKeyBtn.addEventListener('click', async () => {
                 const key = apiKeyInput.value.trim();
-                const prov = AI_PROVIDERS[modalSelectedProvider];
+                const providerAtStart = modalSelectedProvider;
+                const prov = AI_PROVIDERS[providerAtStart];
                 if (!key) {
                     showModalTestStatus('warn', t().testKeyEmpty);
                     apiKeyInput.focus();
                     return;
                 }
 
+                const myToken = ++activeTestToken;
                 clearModalTestStatus();
                 modalTestKeyBtn.disabled = true;
                 modalTestKeyBtn.classList.add('opacity-70', 'cursor-wait');
@@ -2915,16 +3021,24 @@
 
                 try {
                     await dispatchProviderRequest('Reply with only: OK', null, {
-                        providerId: modalSelectedProvider,
-                        apiKeyOverride: key
+                        providerId: providerAtStart,
+                        apiKeyOverride: key,
+                        isTest: true,
+                        timeoutMs: 10000,
+                        customUrlOverride: providerAtStart === 'custom' ? customUrlInput.value.trim() : undefined,
+                        customModelOverride: providerAtStart === 'custom' ? customModelInput.value.trim() : undefined
                     });
-                    showModalTestStatus('success', t().testKeySuccess(prov.name));
+                    if (myToken === activeTestToken) {
+                        showModalTestStatus('success', t().testKeySuccess(prov.name));
+                    }
                 } catch (err) {
-                    showModalTestStatus('error', getDiagnosticErrorMessage(err, modalSelectedProvider));
+                    if (myToken === activeTestToken) {
+                        showModalTestStatus('error', getDiagnosticErrorMessage(err, providerAtStart));
+                    }
                 } finally {
-                    modalTestKeyBtn.disabled = false;
-                    modalTestKeyBtn.classList.remove('opacity-70', 'cursor-wait');
-                    modalTestKeyLabel.textContent = t().modalTestKey;
+                    if (myToken === activeTestToken) {
+                        resetTestKeyBtnUI();
+                    }
                 }
             });
 
@@ -3006,21 +3120,45 @@
                 return JSON.parse(cleaned.slice(firstBrace, lastBrace + 1));
             }
 
-            async function fetchWithBackoff(url, options, maxRetries = 1) {
+            async function fetchWithTimeout(url, options = {}, timeoutMs = 20000) {
+                const controller = new AbortController();
+                const timer = setTimeout(() => controller.abort(), timeoutMs);
+                try {
+                    return await fetch(url, { ...options, signal: controller.signal });
+                } catch (err) {
+                    if (err && err.name === 'AbortError') {
+                        const te = new Error('Request timed out');
+                        te.code = 'TIMEOUT';
+                        throw te;
+                    }
+                    throw err;
+                } finally {
+                    clearTimeout(timer);
+                }
+            }
+
+            async function fetchWithBackoff(url, options, maxRetries = 1, timeoutMs = 22000) {
                 let delay = 900;
                 for (let attempt = 0; attempt <= maxRetries; attempt++) {
                     try {
-                        const resp = await fetch(url, options);
+                        const resp = await fetchWithTimeout(url, options, timeoutMs);
                         if (resp.ok) return await resp.json();
                         if ((resp.status === 429 || resp.status >= 500) && attempt < maxRetries) {
                             await new Promise(r => setTimeout(r, delay));
                             delay *= 2;
                             continue;
                         }
-                        const err = new Error(`HTTP ${resp.status}`);
+                        let apiMsg = '';
+                        try {
+                            const errBody = await resp.json();
+                            apiMsg = errBody?.error?.message || errBody?.message || '';
+                        } catch (_) {}
+                        const err = new Error(`HTTP ${resp.status}${apiMsg ? ': ' + apiMsg : ''}`);
                         err.status = resp.status;
+                        err.apiMessage = apiMsg;
                         throw err;
                     } catch (err) {
+                        if (err && err.code === 'TIMEOUT') throw err;
                         if (attempt < maxRetries && (!err.status || err.status === 429 || err.status >= 500)) {
                             await new Promise(r => setTimeout(r, delay));
                             delay *= 2;
@@ -3109,7 +3247,40 @@ Document to translate:
 ${rawText ? rawText : (isRu ? 'Прочти текст с прикреплённого фото справки и расшифруй его.' : 'Read the text from the attached report photo and translate it.')}`;
             }
 
-            async function callOpenAICompatibleText({ endpoint, apiKey, models, promptText, imgObj, extraHeaders = {} }) {
+            let cachedGeminiModel = null;
+
+            async function discoverOpenAIModels(endpoint, apiKey, extraHeaders = {}, hasImage = false, timeoutMs = 10000) {
+                try {
+                    const modelsUrl = endpoint.replace(/\/chat\/completions\/?$/, '/models');
+                    if (modelsUrl === endpoint) return [];
+                    const resp = await fetchWithTimeout(modelsUrl, {
+                        method: 'GET',
+                        headers: {
+                            'Authorization': `Bearer ${apiKey}`,
+                            ...extraHeaders
+                        }
+                    }, timeoutMs);
+                    if (!resp.ok) return [];
+                    const data = await resp.json();
+                    const list = Array.isArray(data?.data) ? data.data : [];
+                    const skipRe = /(whisper|tts|audio|guard|embed|moderation|transcribe|dall-e|sora|realtime|speech|playai|orpheus)/i;
+                    const ids = list
+                        .map(m => m && m.id)
+                        .filter(id => typeof id === 'string' && !skipRe.test(id));
+
+                    if (hasImage) {
+                        const visionFirst = ids.filter(id => /(vision|scout|maverick|4o|vl|pixtral)/i.test(id));
+                        if (visionFirst.length) return visionFirst.slice(0, 3);
+                    }
+                    const preferred = ids.filter(id => /(llama-3\.3|llama-4|gpt-4o|gpt-oss|qwen|gemma|mixtral|compound)/i.test(id));
+                    const rest = ids.filter(id => !preferred.includes(id));
+                    return [...preferred, ...rest].slice(0, 3);
+                } catch (e) {
+                    return [];
+                }
+            }
+
+            async function callOpenAICompatibleText({ endpoint, apiKey, models, promptText, imgObj, extraHeaders = {}, timeoutMs = 22000 }) {
                 const hasImage = Boolean(imgObj && imgObj.base64);
                 const userContent = hasImage
                     ? [
@@ -3118,36 +3289,53 @@ ${rawText ? rawText : (isRu ? 'Прочти текст с прикреплённ
                     ]
                     : promptText;
 
-                let lastError = null;
-                for (const model of models) {
-                    try {
-                        // Fast failover across free models without long retry stalls
-                        const result = await fetchWithBackoff(endpoint, {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                                'Authorization': `Bearer ${apiKey}`,
-                                ...extraHeaders
-                            },
-                            body: JSON.stringify({
-                                model,
-                                messages: [{ role: 'user', content: userContent }],
-                                temperature: 0.3
-                            })
-                        }, 0);
+                const tryModels = async (modelList) => {
+                    let lastErr = null;
+                    for (const model of modelList) {
+                        try {
+                            const result = await fetchWithBackoff(endpoint, {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    'Authorization': `Bearer ${apiKey}`,
+                                    ...extraHeaders
+                                },
+                                body: JSON.stringify({
+                                    model,
+                                    messages: [{ role: 'user', content: userContent }],
+                                    temperature: 0.3
+                                })
+                            }, 0, timeoutMs);
 
-                        const rawOut = result?.choices?.[0]?.message?.content;
-                        const textOut = Array.isArray(rawOut)
-                            ? rawOut.map(c => c.text || '').join('\n')
-                            : rawOut;
-                        if (!textOut) throw new Error('Empty model response');
-                        return textOut;
-                    } catch (err) {
-                        lastError = err;
-                        if (err.status === 401 || err.status === 402 || err.status === 403) throw err;
+                            const rawOut = result?.choices?.[0]?.message?.content;
+                            const textOut = Array.isArray(rawOut)
+                                ? rawOut.map(c => c.text || '').join('\n')
+                                : rawOut;
+                            if (!textOut) throw new Error('Empty model response');
+                            return { ok: true, text: textOut };
+                        } catch (err) {
+                            lastErr = err;
+                            if (err.code === 'TIMEOUT' || err.status === 401 || err.status === 402 || err.status === 403) throw err;
+                        }
+                    }
+                    return { ok: false, error: lastErr };
+                };
+
+                const firstPass = await tryModels(models);
+                if (firstPass.ok) return firstPass.text;
+
+                const errStatus = firstPass.error && firstPass.error.status;
+                if (errStatus === 404 || errStatus === 400) {
+                    const discovered = (await discoverOpenAIModels(endpoint, apiKey, extraHeaders, hasImage, Math.min(timeoutMs, 10000)))
+                        .filter(m => !models.includes(m));
+                    if (discovered.length) {
+                        const secondPass = await tryModels(discovered);
+                        if (secondPass.ok) return secondPass.text;
+                        throw secondPass.error || firstPass.error;
                     }
                 }
-                throw lastError || new Error('AI request failed');
+
+                throw firstPass.error || new Error('AI request failed');
             }
 
             async function dispatchProviderRequest(promptText, imgObj = null, overrides = {}) {
@@ -3155,74 +3343,151 @@ ${rawText ? rawText : (isRu ? 'Прочти текст с прикреплённ
                 const activeKey = typeof overrides.apiKeyOverride === 'string'
                     ? overrides.apiKeyOverride
                     : getApiKeyForProvider(providerId);
+                const timeoutMs = overrides.timeoutMs || 22000;
 
-                if (providerId === 'openrouter') {
-                    if (!activeKey) {
-                        const e = new Error('Missing key');
-                        e.code = 'MISSING_KEY';
-                        throw e;
+                if (!activeKey) {
+                    const e = new Error('Missing key');
+                    e.code = 'MISSING_KEY';
+                    throw e;
+                }
+
+                const hasImg = Boolean(imgObj && imgObj.base64);
+
+                // Gemini provider (Google Generative Language API with auto-discovery & timeout)
+                if (providerId === 'gemini') {
+                    const parts = [{ text: promptText }];
+                    if (hasImg) {
+                        parts.push({
+                            inlineData: {
+                                mimeType: imgObj.mimeType,
+                                data: imgObj.base64
+                            }
+                        });
                     }
-                    const hasImg = Boolean(imgObj && imgObj.base64);
-                    const models = hasImg
-                        ? [
-                            'openrouter/free',
-                            'google/gemma-3-27b-it:free',
-                            'qwen/qwen2.5-vl-72b-instruct:free'
-                        ]
-                        : [
-                            'openrouter/free',
-                            'google/gemma-3-27b-it:free',
-                            'meta-llama/llama-3.3-70b-instruct:free',
-                            'mistralai/mistral-small-3.1-24b-instruct:free'
-                        ];
+                    const payload = { contents: [{ parts }] };
 
-                    return await callOpenAICompatibleText({
-                        endpoint: 'https://openrouter.ai/api/v1/chat/completions',
-                        apiKey: activeKey,
-                        models,
-                        promptText,
-                        imgObj: hasImg ? imgObj : null,
-                        extraHeaders: {
-                            'HTTP-Referer': window.location.origin || 'https://plainly.app',
-                            'X-Title': 'plainly.'
+                    const tryGeminiModels = async (modelNames) => {
+                        let lastErr = null;
+                        for (const modelName of modelNames) {
+                            const normalized = modelName.startsWith('models/') ? modelName : `models/${modelName}`;
+                            const url = `https://generativelanguage.googleapis.com/v1beta/${normalized}:generateContent?key=${activeKey}`;
+                            try {
+                                const result = await fetchWithBackoff(url, {
+                                    method: 'POST',
+                                    headers: { 'Content-Type': 'application/json' },
+                                    body: JSON.stringify(payload)
+                                }, 0, timeoutMs);
+                                const rawOut = result?.candidates?.[0]?.content?.parts?.[0]?.text;
+                                if (!rawOut) throw new Error('Empty Gemini output');
+                                cachedGeminiModel = normalized;
+                                return { ok: true, text: rawOut };
+                            } catch (err) {
+                                lastErr = err;
+                                if (err.code === 'TIMEOUT' || err.status === 401 || err.status === 403) throw err;
+                            }
                         }
-                    });
-                }
+                        return { ok: false, error: lastErr };
+                    };
 
-                // Gemini provider
-                const geminiKey = activeKey || "";
-                const parts = [{ text: promptText }];
-                if (imgObj && imgObj.base64) {
-                    parts.push({
-                        inlineData: {
-                            mimeType: imgObj.mimeType,
-                            data: imgObj.base64
+                    const initialModels = cachedGeminiModel
+                        ? [cachedGeminiModel, 'models/gemini-2.5-flash'].filter((v, i, a) => a.indexOf(v) === i)
+                        : ['models/gemini-2.5-flash', 'models/gemini-3.8-flash'];
+
+                    const firstPass = await tryGeminiModels(initialModels);
+                    if (firstPass.ok) return firstPass.text;
+
+                    const errStatus = firstPass.error && firstPass.error.status;
+                    if (errStatus === 404 || errStatus === 400) {
+                        try {
+                            const listResp = await fetchWithTimeout(
+                                `https://generativelanguage.googleapis.com/v1beta/models?key=${activeKey}`,
+                                { method: 'GET' },
+                                Math.min(timeoutMs, 10000)
+                            );
+                            if (listResp.ok) {
+                                const listData = await listResp.json();
+                                const skipRe = /(embedding|aqa|imagen|veo|tts|audio|robotics|computer-use|learnlm)/i;
+                                const available = (Array.isArray(listData?.models) ? listData.models : [])
+                                    .filter(m =>
+                                        m && typeof m.name === 'string' &&
+                                        Array.isArray(m.supportedGenerationMethods) &&
+                                        m.supportedGenerationMethods.includes('generateContent') &&
+                                        !skipRe.test(m.name)
+                                    )
+                                    .map(m => m.name);
+
+                                const scoreModel = (name) => {
+                                    let score = 0;
+                                    if (/flash/i.test(name)) score += 100;
+                                    if (/gemini/i.test(name)) score += 50;
+                                    if (/lite|exp|preview/i.test(name)) score -= 5;
+                                    const verMatch = name.match(/gemini-(\d+(?:\.\d+)?)/i);
+                                    if (verMatch) score += parseFloat(verMatch[1]) * 10;
+                                    return score;
+                                };
+
+                                const discovered = available
+                                    .filter(name => !initialModels.includes(name))
+                                    .sort((a, b) => scoreModel(b) - scoreModel(a))
+                                    .slice(0, overrides.isTest ? 2 : 3);
+
+                                if (discovered.length) {
+                                    const secondPass = await tryGeminiModels(discovered);
+                                    if (secondPass.ok) return secondPass.text;
+                                    throw secondPass.error || firstPass.error;
+                                }
+                            }
+                        } catch (discErr) {
+                            if (discErr && (discErr.code === 'TIMEOUT' || discErr.status === 401 || discErr.status === 403)) throw discErr;
                         }
-                    });
-                }
-                const payload = { contents: [{ parts }] };
-                const endpoints = [
-                    `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${geminiKey}`,
-                    `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${geminiKey}`
-                ];
-
-                let lastError = null;
-                for (const url of endpoints) {
-                    try {
-                        const result = await fetchWithBackoff(url, {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify(payload)
-                        }, 1);
-                        const rawOut = result?.candidates?.[0]?.content?.parts?.[0]?.text;
-                        if (!rawOut) throw new Error('Empty Gemini output');
-                        return rawOut;
-                    } catch (err) {
-                        lastError = err;
-                        if (err.status === 401 || err.status === 403) throw err;
                     }
+
+                    throw firstPass.error || new Error('Gemini request failed');
                 }
-                throw lastError || new Error('Gemini request failed');
+
+                // OpenAI-compatible providers (Groq, Custom API)
+                const savedCustomUrl = (() => {
+                    try { return (localStorage.getItem(STORAGE.CUSTOM_URL) || '').trim(); } catch (e) { return ''; }
+                })();
+                const savedCustomModel = (() => {
+                    try { return (localStorage.getItem(STORAGE.CUSTOM_MODEL) || '').trim(); } catch (e) { return ''; }
+                })();
+
+                const customUrl = typeof overrides.customUrlOverride === 'string'
+                    ? overrides.customUrlOverride.trim()
+                    : savedCustomUrl;
+                const customModel = (typeof overrides.customModelOverride === 'string'
+                    ? overrides.customModelOverride.trim()
+                    : savedCustomModel) || 'gpt-4o-mini';
+
+                const OPENAI_COMPAT_MAP = {
+                    groq: {
+                        endpoint: 'https://api.groq.com/openai/v1/chat/completions',
+                        models: hasImg
+                            ? ['meta-llama/llama-4-scout-17b-16e-instruct', 'llama-3.2-11b-vision-preview']
+                            : ['llama-3.3-70b-versatile', 'llama-3.1-8b-instant']
+                    },
+                    custom: {
+                        endpoint: customUrl,
+                        models: [customModel]
+                    }
+                };
+
+                const cfg = OPENAI_COMPAT_MAP[providerId];
+                if (!cfg || !cfg.endpoint) {
+                    const e = new Error('Missing endpoint');
+                    e.code = 'MISSING_ENDPOINT';
+                    throw e;
+                }
+
+                return await callOpenAICompatibleText({
+                    endpoint: cfg.endpoint,
+                    apiKey: activeKey,
+                    models: cfg.models,
+                    promptText,
+                    imgObj: hasImg ? imgObj : null,
+                    timeoutMs
+                });
             }
 
             async function callAiTranslator(rawText, imgObj) {
