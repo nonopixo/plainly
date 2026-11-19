@@ -328,14 +328,8 @@
                 <a href="#privacy-section" id="nav-privacy" class="hover:text-ink transition-colors py-2">Приватность</a>
             </nav>
 
-            <!-- Right Controls: AI Badge, RU|EN Switcher, API Key Gear, Theme Toggle -->
+            <!-- Right Controls: RU|EN Switcher, API Key Gear, Theme Toggle -->
             <div class="flex items-center gap-2 sm:gap-2.5 shrink-0">
-                <!-- Gemini AI Live Status Badge -->
-                <div class="hidden sm:inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-medium bg-surface text-ink border border-warm">
-                    <span class="w-2 h-2 rounded-full bg-accent ai-beacon shrink-0"></span>
-                    <span id="ai-badge-text">Gemini AI</span>
-                </div>
-
                 <!-- Segmented RU | EN Language Switcher -->
                 <div class="inline-flex p-1 rounded-full bg-surface border border-warm" role="group" aria-label="Language switcher">
                     <button type="button" id="lang-ru-btn" class="px-2.5 py-1 rounded-full text-xs font-semibold transition-all cursor-pointer bg-card text-ink border border-warm">RU</button>
@@ -920,14 +914,22 @@
                 </p>
                 <label for="api-key-input" id="modal-label" class="block text-xs font-semibold uppercase tracking-wider text-muted">Gemini API Key (опционально)</label>
                 <input type="password" id="api-key-input" placeholder="AIza..." class="w-full px-3.5 py-2.5 rounded-xl bg-surface border border-warm text-sm font-mono text-ink placeholder:text-muted focus:outline-none">
+                <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener noreferrer" id="modal-get-key-link" class="inline-flex items-center gap-1 text-xs font-medium text-accent hover:text-accentHover transition-colors">
+                    Получить бесплатный ключ в Google AI Studio →
+                </a>
             </div>
-            <div class="flex items-center justify-between gap-2 pt-2">
-                <button type="button" id="modal-clear-key-btn" class="px-3.5 py-2 rounded-xl text-xs font-medium text-muted hover:text-urgentText hover:bg-surface transition-colors cursor-pointer">
-                    Сбросить ключ
+            <div class="flex flex-wrap items-center justify-between gap-2 pt-2 border-t divider">
+                <button type="button" id="modal-copy-link-btn" class="px-3.5 py-2 rounded-xl text-xs font-medium bg-surface hover:bg-surfaceHover text-ink border border-warm transition-colors cursor-pointer">
+                    Скопировать ссылку с ключом
                 </button>
-                <button type="button" id="modal-save-key-btn" class="px-5 py-2.5 rounded-xl text-xs sm:text-sm font-semibold bg-accent hover:bg-accentHover text-white transition-colors cursor-pointer">
-                    Сохранить
-                </button>
+                <div class="flex items-center gap-2 ml-auto">
+                    <button type="button" id="modal-clear-key-btn" class="px-3.5 py-2 rounded-xl text-xs font-medium text-muted hover:text-urgentText hover:bg-surface transition-colors cursor-pointer">
+                        Сбросить ключ
+                    </button>
+                    <button type="button" id="modal-save-key-btn" class="px-5 py-2.5 rounded-xl text-xs sm:text-sm font-semibold bg-accent hover:bg-accentHover text-white transition-colors cursor-pointer">
+                        Сохранить
+                    </button>
+                </div>
             </div>
         </div>
     </div>
@@ -987,7 +989,6 @@
                     navVet: 'Ветеринария',
                     navHow: 'Как это работает',
                     navPrivacy: 'Приватность',
-                    aiBadge: 'Gemini AI',
                     heroKicker1: 'Редакционный ИИ-переводчик',
                     heroKicker2: 'Текст и фото справок',
                     heroTitle: 'Переводим с врачебного на\u00A0человеческий язык',
@@ -1077,6 +1078,8 @@
                     modalTitle: 'Настройки Gemini API',
                     modalDesc: 'В среде предпросмотра ключ подставляется автоматически. Если вы разместите этот сайт на GitHub Pages или своём домене, вставьте сюда свой бесплатный Gemini API-ключ (хранится только в вашем браузере).',
                     modalLabel: 'Gemini API Key (опционально)',
+                    modalGetKeyLink: 'Получить бесплатный ключ в Google AI Studio →',
+                    modalCopyLink: 'Скопировать ссылку с ключом',
                     modalClear: 'Сбросить ключ',
                     modalSave: 'Сохранить',
                     toasts: {
@@ -1086,12 +1089,15 @@
                         imgTooBig: 'Файл слишком большой (максимум 10 МБ).',
                         copiedFull: 'Полная расшифровка скопирована',
                         copiedQ: 'Список вопросов скопирован',
+                        copiedKeyLink: 'Ссылка с ключом скопирована',
+                        noKeyToShare: 'Сначала введите API-ключ в поле выше',
                         copyFail: 'Не удалось скопировать',
                         historyLoaded: 'Загружено из истории',
                         historyCleared: 'История очищена',
                         vetModeOn: 'Переключено в режим «Ветеринария»',
                         keySaved: 'API-ключ сохранён локально',
-                        keyCleared: 'Свой API-ключ удалён'
+                        keyCleared: 'Свой API-ключ удалён',
+                        keyAutoActivated: 'API-ключ активирован автоматически'
                     },
                     chars: (n) => {
                         const w = n % 10 === 1 && n % 100 !== 11 ? 'символ' : (n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 10 || n % 100 >= 20)) ? 'символа' : 'символов';
@@ -1106,7 +1112,6 @@
                     navVet: 'Veterinary',
                     navHow: 'How it works',
                     navPrivacy: 'Privacy',
-                    aiBadge: 'Gemini AI',
                     heroKicker1: 'Editorial AI Translator',
                     heroKicker2: 'Text & Report Photos',
                     heroTitle: 'Translating medical jargon into\u00A0plain human language',
@@ -1196,6 +1201,8 @@
                     modalTitle: 'Gemini API Settings',
                     modalDesc: 'Inside preview environments the key is provided automatically. If you host this file externally (e.g., GitHub Pages for your admissions portfolio), paste your own Gemini API key here (stored locally in your browser).',
                     modalLabel: 'Gemini API Key (optional)',
+                    modalGetKeyLink: 'Get a free key in Google AI Studio →',
+                    modalCopyLink: 'Copy link with key',
                     modalClear: 'Clear key',
                     modalSave: 'Save',
                     toasts: {
@@ -1205,12 +1212,15 @@
                         imgTooBig: 'File is too large (10 MB max).',
                         copiedFull: 'Full summary copied to clipboard',
                         copiedQ: 'Questions copied to clipboard',
+                        copiedKeyLink: 'Link with API key copied',
+                        noKeyToShare: 'Enter an API key above first',
                         copyFail: 'Could not copy text',
                         historyLoaded: 'Loaded from history',
                         historyCleared: 'History cleared',
                         vetModeOn: 'Switched to Veterinary mode',
                         keySaved: 'API key saved locally',
-                        keyCleared: 'Custom API key cleared'
+                        keyCleared: 'Custom API key cleared',
+                        keyAutoActivated: 'API key activated automatically'
                     },
                     chars: (n) => `${n} ${n === 1 ? 'char' : 'chars'}`
                 }
@@ -1777,6 +1787,7 @@
             const apiKeyInput = document.getElementById('api-key-input');
             const modalSaveKeyBtn = document.getElementById('modal-save-key-btn');
             const modalClearKeyBtn = document.getElementById('modal-clear-key-btn');
+            const modalCopyLinkBtn = document.getElementById('modal-copy-link-btn');
 
             const modeHumanBtn = document.getElementById('mode-human-btn');
             const modeVetBtn = document.getElementById('mode-vet-btn');
@@ -1891,6 +1902,30 @@
                 customKeyDot.classList.toggle('hidden', !hasKey);
             }
 
+            function extractApiKeyFromUrl() {
+                let rawKey = null;
+                try {
+                    const hash = window.location.hash || '';
+                    if (hash.includes('key=')) {
+                        const hashParams = new URLSearchParams(hash.replace(/^#/, ''));
+                        rawKey = hashParams.get('key');
+                    }
+                    if (!rawKey && window.location.search) {
+                        const searchParams = new URLSearchParams(window.location.search);
+                        rawKey = searchParams.get('key');
+                    }
+                    if (rawKey) {
+                        const extractedKey = decodeURIComponent(rawKey).trim();
+                        if (extractedKey) {
+                            localStorage.setItem(KEYS.APIKEY, extractedKey);
+                            window.history.replaceState(null, '', window.location.pathname);
+                            return true;
+                        }
+                    }
+                } catch (e) {}
+                return false;
+            }
+
             function updateCharCount() {
                 charCountEl.textContent = t().chars(inputEl.value.length);
             }
@@ -1984,7 +2019,6 @@
                 document.getElementById('nav-vet').textContent = d.navVet;
                 document.getElementById('nav-how').textContent = d.navHow;
                 document.getElementById('nav-privacy').textContent = d.navPrivacy;
-                document.getElementById('ai-badge-text').textContent = d.aiBadge;
 
                 document.getElementById('hero-kicker-1').textContent = d.heroKicker1;
                 document.getElementById('hero-kicker-2').textContent = d.heroKicker2;
@@ -2090,6 +2124,8 @@
                 document.getElementById('modal-title').textContent = d.modalTitle;
                 document.getElementById('modal-desc').textContent = d.modalDesc;
                 document.getElementById('modal-label').textContent = d.modalLabel;
+                document.getElementById('modal-get-key-link').textContent = d.modalGetKeyLink;
+                modalCopyLinkBtn.textContent = d.modalCopyLink;
                 modalClearKeyBtn.textContent = d.modalClear;
                 modalSaveKeyBtn.textContent = d.modalSave;
 
@@ -2215,6 +2251,16 @@
                 try { localStorage.removeItem(KEYS.APIKEY); } catch (e) {}
                 refreshCustomKeyIndicator();
                 showToast(t().toasts.keyCleared);
+            });
+            modalCopyLinkBtn.addEventListener('click', () => {
+                const key = apiKeyInput.value.trim() || getCustomApiKey();
+                if (!key) {
+                    showToast(t().toasts.noKeyToShare);
+                    apiKeyInput.focus();
+                    return;
+                }
+                const shareUrl = `${window.location.origin}${window.location.pathname}#key=${encodeURIComponent(key)}`;
+                showToast(copyText(shareUrl) ? t().toasts.copiedKeyLink : t().toasts.copyFail);
             });
 
             // ---------------------------------------------------------
@@ -2760,12 +2806,18 @@ ${rawText ? rawText : (isRu ? 'Прочти текст с прикреплённ
                 if (savedLang === 'ru' || savedLang === 'en') currentLang = savedLang;
             } catch (e) {}
 
+            const keyAutoActivated = extractApiKeyFromUrl();
+
             refreshCustomKeyIndicator();
             setMode('human');
             setPet('cat');
             setTone('simple');
             applyLanguage(currentLang);
             renderHistoryBar();
+
+            if (keyAutoActivated) {
+                showToast(t().toasts.keyAutoActivated);
+            }
         });
     </script>
 </body>
